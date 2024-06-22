@@ -128,10 +128,17 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-end space-x-2">
-      <Button>Save</Button>
-      <Button>Copy</Button>
-      <Button>Delete</Button>
+    <div class="flex justify-center">
+      <div class="grow overflow-x-auto flex">
+        <Version/>
+        <Version/>
+        <Version/>
+      </div>
+      <div class="flex justify-end space-x-2">
+        <Button>Save</Button>
+        <Button>Copy</Button>
+        <Button>Delete</Button>
+      </div>
     </div>
   </div>
 </template>
@@ -141,4 +148,5 @@ import Title from "@/components/Title.vue";
 import MiniButton from "@/components/MiniButton.vue";
 import Chip from "@/components/Chip.vue";
 import Button from "@/components/Button.vue";
+import Version from "@/views/project/Version.vue";
 </script>
