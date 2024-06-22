@@ -1,5 +1,5 @@
 <template>
-  <div class="flex space-x-4 bg-gray-500 text-white rounded pl-4 pr-3 py-1 cursor-pointer items-center hover:bg-gray-600 group">
+  <div class="flex space-x-4 bg-gray-100 rounded pl-4 pr-3 py-1 cursor-pointer items-center hover:bg-gray-200 group">
     <div class="whitespace-nowrap text-sm">
       <slot/>
     </div>

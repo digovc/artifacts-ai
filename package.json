@@ -14,6 +14,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@guolao/vue-monaco-editor": "^1.5.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3"
   },
