@@ -27,6 +27,15 @@ class Database {
     localStorage.setItem(`${ table }_ids`, JSON.stringify(tableIds));
     localStorage.setItem(document.id, JSON.stringify(document));
   }
+
+  delete(table, id) {
+    const tableIdsJson = localStorage.getItem(`${ table }_ids`) || '[]';
+    const tableIds = JSON.parse(tableIdsJson);
+    const index = tableIds.indexOf(id);
+    tableIds.splice(index, 1);
+    localStorage.setItem(`${ table }_ids`, JSON.stringify(tableIds));
+    localStorage.removeItem(id);
+  }
 }
 
 export default new Database();

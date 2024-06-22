@@ -19,7 +19,8 @@
           No projects yet
         </template>
         <template #description>
-          Create a project to get started and collaborate with your AI team.
+          Create a project to get started and collaborate with your AI.
+          The project will contain all the data and artifacts for the AI model.
         </template>
         <template #button>
           Create project

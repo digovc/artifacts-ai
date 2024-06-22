@@ -15,19 +15,23 @@
             No messages yet
           </template>
           <template #description>
-            Start the conversation by sending a message
+            Start the conversation by sending a message.
+            <br>
+            You can also add files as references and artifacts as output for the AI model.
           </template>
         </Empty>
       </div>
     </div>
     <div>
       <div class="flex space-x-2 overflow-x-auto py-4" v-if="references.length">
-        <Chip v-for="reference in references" :key="reference.id" :reference="reference">
+        <Chip v-for="reference in references" :key="reference.id" :reference="reference"
+              @onClick="openReference(reference)"
+              @onDeleteClick="deleteReference(reference)">
           {{ reference.name }}
         </Chip>
       </div>
       <div v-else class="text-center pt-4 flex justify-center items-center space-x-4">
-        <Button :icon="faFile">
+        <Button :icon="faFile" @click="selectReferences">
           Add references
         </Button>
         <div class="text-xs font-thin">
@@ -36,16 +40,17 @@
       </div>
     </div>
     <div>
-      <NewMessage/>
+      <NewMessage @onAddReferenceClick="selectReferences" :project="project"/>
     </div>
   </div>
+  <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
 </template>
 <script setup>
 import Title from "@/components/Title.vue";
 import NewMessage from "@/views/project/NewMessage.vue";
 import Chip from "@/components/Chip.vue";
 import Message from "@/views/project/Message.vue";
-import { onMounted, ref } from "vue";
+import { ref, watch } from "vue";
 import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
 import Button from "@/components/Button.vue";
@@ -53,10 +58,16 @@ import { faFile } from "@fortawesome/free-solid-svg-icons";
 
 const messages = ref([]);
 const references = ref([]);
+const referenceInput = ref(null);
 
 const props = defineProps({
   project: Object,
 })
+
+watch(() => props.project, () => {
+  loadMessages();
+  loadReferences();
+});
 
 const loadMessages = () => {
   const projectId = props.project.id;
@@ -70,8 +81,45 @@ const loadReferences = () => {
   references.value = database.getByFilter("references", filter);
 };
 
-onMounted(() => {
-  loadMessages();
-  loadReferences();
-})
+const selectReferences = () => {
+  referenceInput.value.click();
+};
+
+const createReferences = async () => {
+  const files = referenceInput.value.files;
+
+  for (const file of files) {
+    await createReferenceToFile(file);
+  }
+
+  referenceInput.value.value = "";
+};
+
+const createReferenceToFile = async file => {
+  const reader = new FileReader();
+  reader.readAsText(file);
+
+  reader.onload = () => {
+    const content = reader.result;
+
+    const reference = {
+      name: file.name,
+      content,
+      projectId: props.project.id,
+    };
+
+    database.insert("references", reference);
+    references.value.push(reference);
+  };
+};
+
+const deleteReference = reference => {
+  database.delete("references", reference.id);
+  references.value = references.value.filter(x => x.id !== reference.id);
+};
+
+const openReference = reference => {
+  const url = URL.createObjectURL(new Blob([reference.content]));
+  window.open(url, "_blank");
+};
 </script>
