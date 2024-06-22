@@ -9,7 +9,7 @@
       <textarea class="w-full h-full outline-none border rounded p-2 resize-none" rows="5"
                 placeholder="Type your message here"/>
       <div class="absolute right-2 bottom-4">
-        <IconButton :icon="faArrowRight" class="border"/>
+        <IconButton :icon="faArrowRight"/>
       </div>
     </div>
   </div>

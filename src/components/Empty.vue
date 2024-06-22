@@ -11,7 +11,7 @@
         <slot name="description">description</slot>
       </div>
     </div>
-    <div>
+    <div v-if="$slots.button">
       <Button :icon="faPlus" @click="$emit('onButtonClick')">
         <slot name="button">button</slot>
       </Button>

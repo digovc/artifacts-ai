@@ -36,24 +36,23 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Empty from "@/components/Empty.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import database from "@/services/database.js";
 
 const projects = ref([]);
 const router = useRouter();
 
 const loadProjects = () => {
-  const projectsJson = localStorage.getItem("projects") || "[]";
-  projects.value = JSON.parse(projectsJson);
+  projects.value = database.getAll("projects");
 };
 
 const createProject = () => {
   const newProject = {
-    id: projects.value.length + 1,
     name: `Project ${ projects.value.length + 1 }`,
     description: "New awesome project",
     created: new Date().toISOString(),
   };
-  projects.value.push(newProject);
-  localStorage.setItem("projects", JSON.stringify(projects.value));
+
+  database.insert("projects", newProject);
   router.push(`/projects/${ newProject.id }`);
 };
 
