@@ -6,8 +6,8 @@
       </Title>
     </div>
     <div class="grow relative">
-      <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6">
-        <div class="flex flex-col space-y-12" v-if="messages.length">
+      <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
+        <div class="flex flex-col space-y-8" v-if="messages.length">
           <Message v-for="message in messages" :key="message.id" :message="message"/>
         </div>
         <Empty v-else>
@@ -30,7 +30,7 @@
           {{ reference.name }}
         </Chip>
       </div>
-      <div v-else class="text-center pt-4 flex justify-center items-center space-x-4">
+      <div v-else class="text-center pt-8 flex justify-center items-center space-x-4">
         <Button :icon="faFile" @click="selectReferences">
           Add references
         </Button>
@@ -50,16 +50,19 @@ import Title from "@/components/Title.vue";
 import NewMessage from "@/views/project/NewMessage.vue";
 import Chip from "@/components/Chip.vue";
 import Message from "@/views/project/Message.vue";
-import { ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
 import Button from "@/components/Button.vue";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import messageSender from "@/services/message-sender.js";
+import { filter, Subject, takeUntil } from "rxjs";
 
 const messages = ref([]);
 const references = ref([]);
 const referenceInput = ref(null);
+const onDestroy$ = new Subject();
+const messagesContainer = ref(null);
 
 const props = defineProps({
   project: Object,
@@ -74,7 +77,14 @@ const loadMessages = () => {
   const projectId = props.project.id;
   const filter = x => x.projectId === projectId;
   messages.value = database.getByFilter("messages", filter);
+  moveToBottom();
 };
+
+const moveToBottom = () => {
+  setTimeout(() => {
+    messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
+  }, 100);
+}
 
 const loadReferences = () => {
   const projectId = props.project.id;
@@ -134,7 +144,21 @@ const sendMessage = async message => {
   };
 
   database.insert("messages", newMessage);
-  messages.value.push(newMessage);
   await messageSender.send(message, projectId);
 };
+
+onMounted(() => {
+  database.onDocumentInserted$
+      .pipe(takeUntil(onDestroy$))
+      .pipe(filter(x => x.table === "messages" && x.document.projectId === props.project.id))
+      .subscribe(x => {
+        messages.value.push(x.document)
+        moveToBottom();
+      });
+});
+
+onUnmounted(() => {
+  onDestroy$.next();
+  onDestroy$.complete();
+});
 </script>

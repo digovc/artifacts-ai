@@ -1,6 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
+import { Subject } from "rxjs";
 
 class Database {
+  onDocumentInserted$ = new Subject();
+  onDocumentUpdated$ = new Subject();
+  onDocumentDeleted$ = new Subject();
+
   get(id) {
     return JSON.parse(localStorage.getItem(id));
   }
@@ -26,10 +31,12 @@ class Database {
     tableIds.push(document.id);
     localStorage.setItem(`${ table }_ids`, JSON.stringify(tableIds));
     localStorage.setItem(document.id, JSON.stringify(document));
+    this.onDocumentInserted$.next({ table, document });
   }
 
   update(document) {
     localStorage.setItem(document.id, JSON.stringify(document));
+    this.onDocumentUpdated$.next(document);
   }
 
   delete(table, id) {
@@ -39,6 +46,7 @@ class Database {
     tableIds.splice(index, 1);
     localStorage.setItem(`${ table }_ids`, JSON.stringify(tableIds));
     localStorage.removeItem(id);
+    this.onDocumentDeleted$.next(id);
   }
 }
 

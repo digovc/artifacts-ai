@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4 group">
+  <div class="group space-y-2">
     <div class="flex space-x-4">
       <div v-if="message.from === 'assistant'">
         <div class="bg-gray-100 rounded-full w-12 h-12 flex justify-center items-center">
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class="flex justify-between items-center pl-14 invisible group-hover:visible">
+    <div class="flex justify-between items-center pl-16 invisible group-hover:visible">
       <div class="text-xs italic">
         12/12/2021 12:00
       </div>

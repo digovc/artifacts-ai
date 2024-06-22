@@ -23,6 +23,12 @@ class MessageSender {
       messages.push({ role: "user", content: artifacts });
     }
 
+    const historyMessages = database.getByFilter("messages", x => x.projectId === projectId);
+
+    for (const historyMessage of historyMessages) {
+      messages.push({ role: historyMessage.from, content: historyMessage.contentComplete || historyMessage.content });
+    }
+
     messages.push({ role: "user", content: message });
 
     const providerMessage = await openai.sendMessage(messages);
@@ -30,7 +36,7 @@ class MessageSender {
 
     const result = this._extractArtifacts(response);
 
-    this._saveMessage(result.message, projectId);
+    this._saveMessage(result.message, response, projectId);
     this._saveArtifacts(result.artifacts, projectId);
   }
 
@@ -79,11 +85,10 @@ class MessageSender {
     return parts[parts.length - 1];
   }
 
-  _saveMessage(message, projectId) {
-    if (!message) return;
-
+  _saveMessage(message, messageComplete, projectId) {
     const newProviderMessage = {
       content: message,
+      contentComplete: messageComplete,
       projectId,
       from: "assistant",
     };
@@ -138,9 +143,9 @@ class MessageSender {
         contentLines.shift();
         contentLines.pop();
         currentArtifact.content = contentLines.join('\n');
+        const name = currentArtifact.name;
+        message.push(`[${ name }](#artifact://${ name })`);
         artifacts.push(currentArtifact);
-        const artifactName = currentArtifact.name;
-        message.push(`[[${ artifactName }]]`);
         currentArtifact = null;
         continue;
       }

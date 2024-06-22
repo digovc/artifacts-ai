@@ -16,6 +16,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@guolao/vue-monaco-editor": "^1.5.1",
     "axios": "^1.7.2",
+    "rxjs": "^7.8.1",
     "uuid": "^10.0.0",
     "vue": "^3.4.29",
     "vue-markdown-render": "^2.2.1",

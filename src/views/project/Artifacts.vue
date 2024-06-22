@@ -66,12 +66,14 @@ import Button from "@/components/Button.vue";
 import Version from "@/views/project/Version.vue";
 import { faCopy, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Editor from "@/components/Editor.vue";
-import { ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
+import { filter, Subject, takeUntil } from "rxjs";
 
 const artifacts = ref([]);
 const selectedArtifact = ref({});
+const onDestroy$ = new Subject();
 
 const props = defineProps({
   project: Object,
@@ -85,6 +87,10 @@ const loadArtifacts = () => {
   const projectId = props.project.id;
   const filter = x => x.projectId === projectId;
   artifacts.value = database.getByFilter("artifacts", filter);
+
+  if (artifacts.value.length) {
+    selectedArtifact.value = artifacts.value[0];
+  }
 }
 
 const createArtifact = () => {
@@ -97,7 +103,6 @@ const createArtifact = () => {
   };
 
   database.insert("artifacts", newArtifact);
-  artifacts.value.push(newArtifact);
   selectedArtifact.value = newArtifact;
 }
 
@@ -109,4 +114,28 @@ const deleteArtifact = (artifact) => {
     selectedArtifact.value = {};
   }
 }
+
+onMounted(() => {
+  database.onDocumentInserted$
+      .pipe(takeUntil(onDestroy$))
+      .pipe(filter(x => x.table === "artifacts" && x.document.projectId === props.project.id))
+      .subscribe(x => {
+        artifacts.value.push(x.document)
+        selectedArtifact.value = x.document;
+      });
+
+  database.onDocumentUpdated$
+      .pipe(takeUntil(onDestroy$))
+      .pipe(filter(x => x.projectId === props.project.id))
+      .subscribe(x => {
+        artifacts.value = artifacts.value.filter(y => y.id !== x.id);
+        artifacts.value.push(x)
+        selectedArtifact.value = x
+      });
+});
+
+onUnmounted(() => {
+  onDestroy$.next();
+  onDestroy$.complete();
+});
 </script>
