@@ -1,6 +1,6 @@
 <template>
   <div class="h-full grid grid-cols-2">
-    <div>
+    <div class="border-r">
       <Chat/>
     </div>
     <div>
