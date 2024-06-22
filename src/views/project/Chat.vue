@@ -6,7 +6,7 @@
       </Title>
     </div>
     <div class="grow relative">
-      <div class="absolute inset-0 overflow-y-auto border rounded p-4">
+      <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6">
         <div class="flex flex-col space-y-12" v-if="messages.length">
           <Message v-for="message in messages" :key="message.id" :message="message"/>
         </div>
@@ -17,7 +17,7 @@
           <template #description>
             Start the conversation by sending a message.
             <br>
-            You can also add files as references and artifacts as output for the AI model.
+            You can also add files as references and artifacts as context for the AI model.
           </template>
         </Empty>
       </div>
@@ -40,7 +40,7 @@
       </div>
     </div>
     <div>
-      <NewMessage @onAddReferenceClick="selectReferences" :project="project"/>
+      <NewMessage @onAddReferenceClick="selectReferences" :project="project" @onSendMessage="sendMessage"/>
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
@@ -55,6 +55,7 @@ import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
 import Button from "@/components/Button.vue";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
+import messageSender from "@/services/message-sender.js";
 
 const messages = ref([]);
 const references = ref([]);
@@ -121,5 +122,19 @@ const deleteReference = reference => {
 const openReference = reference => {
   const url = URL.createObjectURL(new Blob([reference.content]));
   window.open(url, "_blank");
+};
+
+const sendMessage = async message => {
+  const projectId = props.project.id;
+
+  const newMessage = {
+    content: message,
+    projectId,
+    from: "user",
+  };
+
+  database.insert("messages", newMessage);
+  messages.value.push(newMessage);
+  await messageSender.send(message, projectId);
 };
 </script>

@@ -43,7 +43,8 @@ const projects = ref([]);
 const router = useRouter();
 
 const loadProjects = () => {
-  projects.value = database.getAll("projects");
+  const allProjects = database.getAll("projects");
+  projects.value = allProjects.sort((a, b) => new Date(b.created) - new Date(a.created));
 };
 
 const createProject = () => {

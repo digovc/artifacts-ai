@@ -20,11 +20,15 @@ class Database {
   }
 
   insert(table, document) {
-    document.id = uuidv4();
+    document.id = `${ table }_${ uuidv4() }`
     const tableIdsJson = localStorage.getItem(`${ table }_ids`) || '[]';
     const tableIds = JSON.parse(tableIdsJson);
     tableIds.push(document.id);
     localStorage.setItem(`${ table }_ids`, JSON.stringify(tableIds));
+    localStorage.setItem(document.id, JSON.stringify(document));
+  }
+
+  update(document) {
     localStorage.setItem(document.id, JSON.stringify(document));
   }
 

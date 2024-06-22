@@ -1,17 +1,15 @@
 <template>
   <div class="space-y-4 group">
     <div class="flex space-x-4">
-      <div>
+      <div v-if="message.from === 'assistant'">
         <div class="bg-gray-100 rounded-full w-12 h-12 flex justify-center items-center">
           <FontAwesomeIcon :icon="faRobot" class="text-2xl text-gray-500 -mt-1"/>
         </div>
       </div>
-      <div class="grow">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. ‘Sed ut perspiciatis unde omnis iste natus error sit
-        voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et
-        quasi architecto beatae vitae dicta sunt explicabo.’
+      <div class="grow bg-gray-100 p-2 rounded-lg text-sm" :class="message.from === 'assistant' ? 'mr-16' : 'ml-16'">
+        <Markdown :src="message.content"/>
       </div>
-      <div>
+      <div v-if="message.from === 'user'">
         <div class="bg-gray-100 rounded-full w-12 h-12 flex justify-center items-center">
           <FontAwesomeIcon :icon="faUser" class="text-2xl text-gray-500 -mt-1"/>
         </div>
@@ -34,16 +32,9 @@
 import MiniButton from "@/components/MiniButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCopy, faEdit, faRefresh, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
-</script>
-<script setup lang="ts">
+import Markdown from "@/components/Markdown.vue";
+
+defineProps({
+  message: Object
+})
 </script>
