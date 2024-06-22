@@ -5,30 +5,59 @@
         <Title>Projects</Title>
       </div>
       <div>
-        <div>add +</div>
+        <Button :icon="faPlus" @click="createProject">
+          Create project
+        </Button>
       </div>
     </div>
-    <div class="grow overflow-y-auto p-12 grid grid-cols-4 gap-8">
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
-      <ProjectCard/>
+    <div class="grow overflow-y-auto p-12">
+      <div class="grid grid-cols-4 gap-8" v-if="projects.length">
+        <ProjectCard v-for="project in projects" :key="project.id" :project="project"/>
+      </div>
+      <Empty v-else @onButtonClick="createProject">
+        <template #title>
+          No projects yet
+        </template>
+        <template #description>
+          Create a project to get started and collaborate with your AI team.
+        </template>
+        <template #button>
+          Create project
+        </template>
+      </Empty>
     </div>
   </div>
 </template>
 <script setup>
 import Title from "@/components/Title.vue";
 import ProjectCard from "@/views/projects/ProjectCard.vue";
+import Button from "@/components/Button.vue";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import Empty from "@/components/Empty.vue";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+
+const projects = ref([]);
+const router = useRouter();
+
+const loadProjects = () => {
+  const projectsJson = localStorage.getItem("projects") || "[]";
+  projects.value = JSON.parse(projectsJson);
+};
+
+const createProject = () => {
+  const newProject = {
+    id: projects.value.length + 1,
+    name: `Project ${ projects.value.length + 1 }`,
+    description: "New awesome project",
+    created: new Date().toISOString(),
+  };
+  projects.value.push(newProject);
+  localStorage.setItem("projects", JSON.stringify(projects.value));
+  router.push(`/projects/${ newProject.id }`);
+};
+
+onMounted(() => {
+  loadProjects();
+});
 </script>
