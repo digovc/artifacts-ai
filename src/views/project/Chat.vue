@@ -7,8 +7,9 @@
     </div>
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
-        <div class="flex flex-col space-y-8" v-if="messages.length">
+        <div class="flex flex-col space-y-4" v-if="messages.length">
           <Message v-for="message in messages" :key="message.id" :message="message"/>
+          <TempMessage/>
         </div>
         <Empty v-else>
           <template #title>
@@ -57,6 +58,8 @@ import Button from "@/components/Button.vue";
 import { faFile } from "@fortawesome/free-solid-svg-icons";
 import messageSender from "@/services/message-sender.js";
 import { filter, Subject, takeUntil } from "rxjs";
+import TempMessage from "@/views/project/TempMessage.vue";
+import streamProvider from "@/services/stream-provider.js";
 
 const messages = ref([]);
 const references = ref([]);
@@ -155,6 +158,10 @@ onMounted(() => {
         messages.value.push(x.document)
         moveToBottom();
       });
+
+  streamProvider.onData$
+      .pipe(takeUntil(onDestroy$))
+      .subscribe(() => moveToBottom());
 });
 
 onUnmounted(() => {

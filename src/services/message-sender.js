@@ -1,5 +1,6 @@
 import database from "@/services/database.js";
 import openai from "@/services/providers/openai.js";
+import streamProvider from "@/services/stream-provider.js";
 
 class MessageSender {
   async send(message, projectId) {
@@ -31,8 +32,19 @@ class MessageSender {
 
     messages.push({ role: "user", content: message });
 
-    const providerMessage = await openai.sendMessage(messages);
-    const response = providerMessage.choices[0].message.content;
+    let content = ''
+
+
+    const onData = (part) => {
+      content += part
+      streamProvider.onData$.next(part)
+    };
+
+    streamProvider.onStart$.next()
+    await openai.sendMessage(messages, onData);
+    streamProvider.onEnd$.next()
+
+    const response = content;
 
     const result = this._extractArtifacts(response);
 
