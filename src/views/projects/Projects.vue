@@ -1,6 +1,6 @@
 <template>
   <div class="bg-gray-200 h-full flex flex-col">
-    <div class="flex items-center justify-between px-12 py-2">
+    <div class="flex items-center justify-between px-4 py-2">
       <div>
         <Title>Projects</Title>
       </div>

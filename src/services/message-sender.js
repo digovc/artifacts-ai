@@ -81,8 +81,7 @@ class MessageSender {
     const defaultExtension = 'txt';
     if (!name) return defaultExtension;
     if (!name.includes('.')) return defaultExtension;
-    const parts = name.split('.');
-    return parts[parts.length - 1];
+    return name.split('.').pop();
   }
 
   _saveMessage(message, messageComplete, projectId) {

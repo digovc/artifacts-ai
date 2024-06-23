@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col p-4">
+  <div class="h-full flex flex-col p-4 py-2">
     <div class="pb-4">
       <Title>
         {{ project.name }}
