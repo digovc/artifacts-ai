@@ -6,8 +6,8 @@
       <IconButton :icon="faGear" @click="openConfiguration"/>
     </div>
     <div class="space-y-2">
-      <IconButton :icon="faQuestionCircle"/>
-      <IconButton :icon="faGithub"/>
+      <IconButton :icon="faQuestionCircle" @click="openHelp"/>
+      <IconButton :icon="faGithub" @click="openGithub"/>
     </div>
   </div>
 </template>
@@ -30,5 +30,13 @@ const createProject = () => {
 
 const openConfiguration = () => {
   router.push("/settings");
+};
+
+const openHelp = () => {
+  window.open("https://youtu.be/x5nJSPIKfvo", "_blank");
+};
+
+const openGithub = () => {
+  window.open("https://github.com/digovc/artifacts-ai.git", "_blank");
 };
 </script>

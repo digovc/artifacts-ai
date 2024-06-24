@@ -38,8 +38,11 @@ import Empty from "@/components/Empty.vue";
 import { onMounted, ref } from "vue";
 import database from "@/services/database.js";
 import globalCommands from "@/services/global-commands.js";
+import settings from "@/services/settings.js";
+import { useRouter } from "vue-router";
 
 const projects = ref([]);
+const router = useRouter();
 
 const loadProjects = () => {
   const allProjects = database.getAll("projects");
@@ -51,6 +54,12 @@ const createProject = () => {
 };
 
 onMounted(() => {
-  loadProjects();
+  const isConfigured = settings.isConfigured();
+
+  if (isConfigured) {
+    loadProjects();
+  } else {
+    router.push("/settings");
+  }
 });
 </script>
