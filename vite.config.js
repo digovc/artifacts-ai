@@ -13,5 +13,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  assetsInclude: ['./src/prompts/*.md']
+  assetsInclude: ['./src/prompts/*.md'],
+  base: process.env.NODE_ENV === 'production'
+    ? '/artifacts-ai/'
+    : '/',
 })
