@@ -90,15 +90,19 @@ const loadArtifacts = () => {
 
   if (artifacts.value.length) {
     selectedArtifact.value = artifacts.value[0];
+  } else {
+    selectedArtifact.value = {};
   }
 }
 
 const createArtifact = () => {
   const projectId = props.project.id;
 
+  const name = `artifact-${new Date().getTime()}.txt`;
+
   const newArtifact = {
     projectId,
-    name: "New artifact",
+    name: name,
     content: "// hello, world!",
   };
 

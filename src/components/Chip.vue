@@ -1,5 +1,5 @@
 <template>
-  <div class="flex space-x-4 rounded pl-4 pr-3 py-1 cursor-pointer items-center hover:bg-gray-200 group"
+  <div class="flex space-x-4 rounded pl-4 pr-3 py-1 cursor-pointer items-center hover:bg-gray-200 group border"
        :class="{ 'bg-gray-200': isSelected }">
     <div class="whitespace-nowrap text-sm" @click="$emit('onClick')">
       <slot/>

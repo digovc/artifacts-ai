@@ -38,6 +38,7 @@ import Empty from "@/components/Empty.vue";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import database from "@/services/database.js";
+import globalCommands from "@/services/global-commands.js";
 
 const projects = ref([]);
 const router = useRouter();
@@ -48,14 +49,7 @@ const loadProjects = () => {
 };
 
 const createProject = () => {
-  const newProject = {
-    name: `Project ${ projects.value.length + 1 }`,
-    description: "New awesome project",
-    created: new Date().toISOString(),
-  };
-
-  database.insert("projects", newProject);
-  router.push(`/projects/${ newProject.id }`);
+  globalCommands.createProject()
 };
 
 onMounted(() => {

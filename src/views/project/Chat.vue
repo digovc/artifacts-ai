@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col p-4 py-2">
     <div class="pb-4">
-      <Title>
+      <Title @click="showInputModal = true" class="cursor-pointer">
         {{ project.name }}
       </Title>
     </div>
@@ -45,6 +45,20 @@
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
+  <Modal v-if="showInputModal" @onClose="showInputModal = false">
+    <template #title>
+      Edit project name
+    </template>
+    <div>
+      <input name="project-name" v-model="project.name" placeholder="Project name" autofocus class="border"/>
+    </div>
+    <template #commands>
+      <Button @click="saveProjectName">
+        Save
+      </Button>
+    </template>
+
+  </Modal>
 </template>
 <script setup>
 import Title from "@/components/Title.vue";
@@ -60,12 +74,14 @@ import messageSender from "@/services/message-sender.js";
 import { filter, Subject, takeUntil } from "rxjs";
 import TempMessage from "@/views/project/TempMessage.vue";
 import streamProvider from "@/services/stream-provider.js";
+import Modal from "@/components/Modal.vue";
 
 const messages = ref([]);
 const references = ref([]);
 const referenceInput = ref(null);
 const onDestroy$ = new Subject();
 const messagesContainer = ref(null);
+const showInputModal = ref(false);
 
 const props = defineProps({
   project: Object,
@@ -148,6 +164,11 @@ const sendMessage = async message => {
 
   database.insert("messages", newMessage);
   await messageSender.send(message, projectId);
+};
+
+const saveProjectName = () => {
+  database.update(props.project);
+  showInputModal.value = false;
 };
 
 onMounted(() => {

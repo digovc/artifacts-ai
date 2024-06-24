@@ -27,7 +27,6 @@ const editorOptions = {
 }
 
 watch(() => props.fileName, (newFileName) => {
-  console.log(newFileName)
   language.value = getLanguage(newFileName)
 })
 

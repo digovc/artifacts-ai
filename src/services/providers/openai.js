@@ -12,8 +12,7 @@ class OpenAI {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4',
-        max_tokens: 1024,
+        model: 'gpt-4o',
         stream: true,
         messages: messages
       })

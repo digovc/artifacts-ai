@@ -1,5 +1,5 @@
 <template>
-  <div class="text-sm animate-pulse" v-if="isReceiving">
+  <div class="text-sm animate-pulse space-y-4" v-if="isReceiving">
     <div class="text-center">
       Receiving message from parent component
     </div>
