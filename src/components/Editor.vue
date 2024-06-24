@@ -8,18 +8,15 @@
       <FontAwesomeIcon :icon="faPen" class="text-xs text-gray-400 invisible group-hover:visible"/>
     </div>
     <div class="grow" v-if="content !== ''">
-      <vue-monaco-editor :language="language" theme="vs" :options="editorOptions" :value="content"
+      <vue-monaco-editor :language="getLanguage()" theme="vs" :options="editorOptions" :value="content"
                          @change="$emit('onContentChange', $event)"/>
     </div>
   </div>
 </template>
 <script setup>
 import { editorLanguages } from "@/constants/editor-languages.js";
-import { ref, watch } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-
-const language = ref('plaintext')
 
 defineEmits(['onOpenTitleModal', 'onContentChange'])
 
@@ -35,18 +32,12 @@ const editorOptions = {
   readOnly: false,
 }
 
-watch(() => props.fileName, (newFileName) => {
-  language.value = getLanguage(newFileName)
-})
-
-const getLanguage = (fileName) => {
-  const extension = fileName.split('.').pop()
+const getLanguage = () => {
+  if (!props.fileName) return 'plaintext'
+  if (!props.fileName.includes('.')) return 'plaintext'
+  const extension = props.fileName.split('.').pop()
   const languages = editorLanguages.filter(x => x[0].includes(extension))
-
-  if (languages.length > 0) {
-    return languages[0][1]
-  }
-
+  if (languages.length > 0) return languages[0][1]
   return extension;
 }
 </script>
