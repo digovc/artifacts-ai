@@ -150,12 +150,8 @@ class MessageSender {
 
       if (line.trim().includes('--artifact_end')) {
         let contentLines = currentArtifact.contentLines;
-
-        for (let i = 0; i < 2; i++) {
-          contentLines.shift();
-          contentLines.pop();
-        }
-
+        contentLines.shift();
+        contentLines.pop();
         currentArtifact.content = contentLines.join('\n');
         const name = currentArtifact.name;
         message.push(`**[${ name }](#artifact://${ name })**`);
