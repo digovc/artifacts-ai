@@ -13,6 +13,12 @@
       <Subgroup title="Anthropic">
         <Field v-model="settings.providers.anthropic.apiKey" label="API Key" type="password"/>
       </Subgroup>
+      <Subgroup title="DeepSeek">
+        <Field v-model="settings.providers.deepseek.apiKey" label="API Key" type="password"/>
+      </Subgroup>
+      <Subgroup title="Groq">
+        <Field v-model="settings.providers.groq.apiKey" label="API Key" type="password"/>
+      </Subgroup>
     </Group>
     <Button @click="saveSettings">Save Settings</Button>
   </div>
@@ -38,15 +44,23 @@ const settings = ref({
     anthropic: {
       apiKey: '',
     },
+    deepseek: {
+      apiKey: '',
+    },
+    groq: {
+      apiKey: '',
+    },
   },
 });
 
 const loadSettings = () => {
   const settingsData = database.get('settings_0');
 
-  if (settingsData?.id) {
-    settings.value = settingsData;
-  }
+  if (!settingsData?.id) return
+
+  settings.value = settingsData;
+  settings.value.providers.deepseek = settings.value.providers.deepseek || { apiKey: '' }
+  settings.value.providers.groq = settings.value.providers.groq || { apiKey: '' }
 };
 
 const saveSettings = () => {
