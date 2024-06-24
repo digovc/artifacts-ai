@@ -12,7 +12,7 @@
           <Message v-for="message in messages" :key="message.id" :message="message"/>
           <TempMessage/>
         </div>
-        <Empty v-else>
+        <Empty v-else :icon="faMessage">
           <template #title>
             No messages yet
           </template>
@@ -63,7 +63,7 @@ import streamProvider from "@/services/stream-provider.js";
 import { filter, Subject, takeUntil } from "rxjs";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faMessage, faPen } from "@fortawesome/free-solid-svg-icons";
 
 const messages = ref([]);
 const references = ref([]);

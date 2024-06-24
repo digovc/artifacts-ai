@@ -1,14 +1,14 @@
-import configuration from "@/services/configuration.js";
+import settings from "@/services/settings.js";
 
 class OpenAI {
   async sendMessage(messages, onData) {
-    const config = configuration.getConfig()
+    const config = settings.getSettings()
     const OPENAI_API_KEY = config.providers.openai.apiKey
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${ OPENAI_API_KEY }`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -19,7 +19,7 @@ class OpenAI {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP error! status: ${ response.status }`);
     }
 
     const reader = response.body.getReader();

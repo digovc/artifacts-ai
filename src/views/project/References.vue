@@ -8,7 +8,7 @@
       </Chip>
     </div>
     <div v-else class="text-center pt-8 flex justify-center items-center space-x-4">
-      <Button :icon="faFile" @click="$emit('onSelectReference')">
+      <Button :icon="faFileLines" @click="$emit('onSelectReference')">
         Add references
       </Button>
       <div class="text-xs font-thin">
@@ -18,7 +18,7 @@
   </div>
 </template>
 <script setup>
-import { faFile } from "@fortawesome/free-solid-svg-icons";
+import { faFileLines } from "@fortawesome/free-solid-svg-icons";
 import Button from "@/components/Button.vue";
 import Chip from "@/components/Chip.vue";
 

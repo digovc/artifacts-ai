@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col justify-center items-center space-y-8 py-12 h-full">
+  <div class="flex flex-col justify-center items-center space-y-8 py-12 h-full text-gray-400">
     <div>
-      <FontAwesomeIcon :icon="faBoxOpen" class="text-6xl text-gray-600"/>
+      <FontAwesomeIcon :icon="icon" class="text-6xl"/>
     </div>
     <div class="text-center space-y-2">
       <Title>
@@ -25,4 +25,11 @@ import Title from "@/components/Title.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 defineEmits(["onButtonClick"]);
+
+defineProps({
+  icon: {
+    type: Object,
+    default: faBoxOpen,
+  },
+});
 </script>

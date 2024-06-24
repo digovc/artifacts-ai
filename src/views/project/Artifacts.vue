@@ -1,7 +1,8 @@
 <template>
-  <div class="h-full flex flex-col p-4">
-    <div class="pb-4">
+  <div class="h-full flex flex-col p-2 px-4">
+    <div class="pb-4 flex space-x-4 items-center">
       <Title>Artifacts</Title>
+      <FontAwesomeIcon :icon="faFilePen" class="text-lg mt-1"/>
     </div>
     <div class="flex space-x-2 pb-4">
       <div class="space-x-2">
@@ -22,7 +23,7 @@
       <div class="absolute inset-0 overflow-y-auto">
         <Editor v-if="selectedArtifact.id" :fileName="selectedArtifact.name" :content="selectedArtifact.content"
                 @onOpenTitleModal="openArtifactTitleModal" @onContentChange="updateArtifactContent"/>
-        <Empty v-if="!artifacts.length">
+        <Empty v-if="!artifacts.length" :icon="faFilePen">
           <template #title>
             No artifact created
           </template>
@@ -35,7 +36,7 @@
             Create a artifact
           </template>
         </Empty>
-        <Empty v-if="artifacts.length && !selectedArtifact.id">
+        <Empty v-if="artifacts.length && !selectedArtifact.id" :icon="faFilePen">
           <template #title>
             No artifact selected
           </template>
@@ -85,7 +86,7 @@ import Title from "@/components/Title.vue";
 import Chip from "@/components/Chip.vue";
 import Button from "@/components/Button.vue";
 import Version from "@/views/project/Version.vue";
-import { faCopy, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faFileExport, faFilePen, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Editor from "@/components/Editor.vue";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
@@ -94,6 +95,7 @@ import { filter, Subject, takeUntil } from "rxjs";
 import fileSaver from "@/services/file.saver.js";
 import clipboard from "@/services/clipboard.js";
 import Modal from "@/components/Modal.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const artifacts = ref([]);
 const selectedArtifact = ref({});

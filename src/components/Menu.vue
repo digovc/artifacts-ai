@@ -3,7 +3,7 @@
     <div class="space-y-2">
       <IconButton :icon="faHome" @click="openHome"/>
       <IconButton :icon="faPlus" @click="createProject"/>
-      <IconButton :icon="faGear"/>
+      <IconButton :icon="faGear" @click="openConfiguration"/>
     </div>
     <div class="space-y-2">
       <IconButton :icon="faQuestionCircle"/>
@@ -26,5 +26,9 @@ const openHome = () => {
 
 const createProject = () => {
   globalCommands.createProject();
+};
+
+const openConfiguration = () => {
+  router.push("/settings");
 };
 </script>

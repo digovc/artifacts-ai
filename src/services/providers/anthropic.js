@@ -1,9 +1,9 @@
-import configuration from "@/services/configuration.js";
 import axios from "axios";
+import settings from "@/services/settings.js";
 
 class Anthropic {
   async sendMessage(message) {
-    const config = configuration.getConfig()
+    const config = settings.getSettings()
     const ANTHROPIC_API_KEY = config.providers.anthropic.apiKey
 
     const response = await axios({
