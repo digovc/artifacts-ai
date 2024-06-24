@@ -11,4 +11,4 @@ deploy:
       --build-arg CLOUD_FRONT_DISTRIBUTION=$CLOUD_FRONT_DISTRIBUTION \
       -t deploy -f deploy.Dockerfile .
   rules:
-    - if: '$CI_COMMIT_BRANCH == "master"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
