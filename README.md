@@ -65,7 +65,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Authors
 
-- **Rodrigo Daros** - [Github](https://github.com/digovc)
+- **Rodrigo** - [Github](https://github.com/digovc)
+- **Rhicardo** - [Github](https://github.com/Rhickk)
 
 
 ## Support
