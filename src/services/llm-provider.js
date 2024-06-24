@@ -1,21 +1,25 @@
 import settings from "@/services/settings.js";
+import { providers } from "@/constants/providers.js";
 
-class OpenAI {
+class LLMProvider {
   async sendMessage(messages, onData) {
-    const config = settings.getSettings()
-    const OPENAI_API_KEY = config.providers.openai.apiKey
+    const config = settings.getSettings();
+    const provider = providers.find(p => p.label === config.provider.name);
+    const url = provider.url;
+    const apiKey = config.provider.apiKey;
+    const model = config.provider.model;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`${ url }/v1/chat/completions`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${ OPENAI_API_KEY }`,
-        'Content-Type': 'application/json'
+        'Authorization': `Bearer ${ apiKey }`,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: model,
         stream: true,
-        messages: messages
-      })
+        messages: messages,
+      }),
     });
 
     if (!response.ok) {
@@ -57,4 +61,4 @@ class OpenAI {
   }
 }
 
-export default new OpenAI();
+export default new LLMProvider();

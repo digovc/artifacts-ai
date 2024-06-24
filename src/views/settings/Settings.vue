@@ -26,7 +26,7 @@ import Field from '@/components/Field.vue';
 import Button from '@/components/Button.vue';
 import database from '@/services/database.js';
 import Title from "@/components/Title.vue";
-import { providers } from '@/services/providers.js';
+import { providers } from "@/constants/providers.js";
 
 const settings = ref({
   general: { theme: 'light' },
@@ -54,7 +54,6 @@ const saveSettings = () => {
 watch(() => settings.value.provider.name, (newProvider) => {
   const selectedProvider = providerOptions.find(option => option.label === newProvider);
   modelsForSelectedProvider.value = selectedProvider ? selectedProvider.models : [];
-  settings.value.provider.model = '';
 });
 
 onMounted(() => {

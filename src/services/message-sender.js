@@ -1,6 +1,6 @@
 import database from "@/services/database.js";
 import streamProvider from "@/services/stream-provider.js";
-import groq from "@/services/providers/groq.js";
+import llmProvider from "@/services/llm-provider.js";
 
 class MessageSender {
   async send(message, projectId) {
@@ -40,8 +40,7 @@ class MessageSender {
     };
 
     streamProvider.onStart$.next(0)
-    // await openai.sendMessage(messages, onData);
-    await groq.sendMessage(messages, onData);
+    await llmProvider.sendMessage(messages, onData);
     streamProvider.onEnd$.next(0)
 
     const response = content;
@@ -155,7 +154,7 @@ class MessageSender {
         contentLines.pop();
         currentArtifact.content = contentLines.join('\n');
         const name = currentArtifact.name;
-        message.push(`**[${ name }](#artifact://${ name })**`);
+        message.push(`**${ name }**`);
         artifacts.push(currentArtifact);
         currentArtifact = null;
         continue;

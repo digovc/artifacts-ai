@@ -1,7 +1,7 @@
 class Settings {
   isConfigured() {
     const settings = this.getSettings();
-    return settings?.providers?.openai?.apiKey || false;
+    return settings?.provider?.apiKey || false;
   }
 
   getSettings() {
