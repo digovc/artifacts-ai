@@ -31,8 +31,13 @@ const openProject = () => {
 };
 
 const deleteProject = (event) => {
+  const projectId = props.project.id;
   props.project.isDeleted = true;
-  database.delete("projects", props.project.id);
+  database.delete("projects", projectId);
+  const itemFilter = (item) => item.projectId === projectId;
+  database.deleteByFilter("messages", itemFilter);
+  database.deleteByFilter("artifacts", itemFilter);
+  database.deleteByFilter("references", itemFilter);
   event.stopPropagation();
   return false;
 };

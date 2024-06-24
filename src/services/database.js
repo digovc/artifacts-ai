@@ -59,6 +59,11 @@ class Database {
     localStorage.removeItem(id);
     this.onDocumentDeleted$.next(id);
   }
+
+  deleteByFilter(table, filter) {
+    const documents = this.getByFilter(table, filter);
+    documents.forEach(document => this.delete(table, document.id));
+  }
 }
 
 export default new Database();
