@@ -20,7 +20,8 @@
     </div>
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto">
-        <Editor v-if="selectedArtifact.id" :fileName="selectedArtifact.name" :content="selectedArtifact.content"/>
+        <Editor v-if="selectedArtifact.id" :fileName="selectedArtifact.name" :content="selectedArtifact.content"
+                @onOpenTitleModal="openArtifactTitleModal"/>
         <Empty v-if="!artifacts.length">
           <template #title>
             No artifact created
@@ -64,6 +65,20 @@
       </div>
     </div>
   </div>
+  <Modal v-if="showInputModal" @onClose="showInputModal = false">
+    <template #title>
+      Edit artifact name
+    </template>
+    <div>
+      <input name="artifact-name" v-model="inputModalTitle" placeholder="Artifact name" autofocus class="border w-80"
+             @keyup.enter="saveArtifactName">
+    </div>
+    <template #commands>
+      <Button @click="saveArtifactName">
+        Save
+      </Button>
+    </template>
+  </Modal>
 </template>
 <script setup>
 import Title from "@/components/Title.vue";
@@ -78,10 +93,13 @@ import Empty from "@/components/Empty.vue";
 import { filter, Subject, takeUntil } from "rxjs";
 import fileSaver from "@/services/file.saver.js";
 import clipboard from "@/services/clipboard.js";
+import Modal from "@/components/Modal.vue";
 
 const artifacts = ref([]);
 const selectedArtifact = ref({});
 const onDestroy$ = new Subject();
+const showInputModal = ref(false);
+const inputModalTitle = ref("");
 
 const props = defineProps({
   project: Object,
@@ -137,6 +155,19 @@ const saveArtifact = () => {
 const copyArtifact = () => {
   if (!selectedArtifact.value.id) return;
   clipboard.copy(selectedArtifact.value.content);
+}
+
+const openArtifactTitleModal = () => {
+  if (!selectedArtifact.value.id) return;
+  inputModalTitle.value = selectedArtifact.value.name;
+  showInputModal.value = true;
+}
+
+const saveArtifactName = () => {
+  if (!selectedArtifact.value.id) return;
+  const update = { name: inputModalTitle.value };
+  database.updateFields(selectedArtifact.value.id, update);
+  showInputModal.value = false;
 }
 
 onMounted(() => {

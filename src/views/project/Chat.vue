@@ -1,9 +1,10 @@
 <template>
   <div class="h-full flex flex-col p-4 py-2">
-    <div class="pb-4">
+    <div class="pb-4 group flex space-x-4 items-center">
       <Title @click="showInputModal = true" class="cursor-pointer">
         {{ project.name }}
       </Title>
+      <FontAwesomeIcon :icon="faPen" @click="showInputModal = true" class="invisible group-hover:visible"/>
     </div>
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
@@ -37,14 +38,14 @@
       Edit project name
     </template>
     <div>
-      <input name="project-name" v-model="project.name" placeholder="Project name" autofocus class="border"/>
+      <input name="project-name" v-model="project.name" placeholder="Project name" autofocus class="border"
+             @keyup.enter="saveProjectName"/>
     </div>
     <template #commands>
       <Button @click="saveProjectName">
         Save
       </Button>
     </template>
-
   </Modal>
 </template>
 <script setup>
@@ -61,6 +62,8 @@ import messageSender from "@/services/message-sender.js";
 import streamProvider from "@/services/stream-provider.js";
 import { filter, Subject, takeUntil } from "rxjs";
 import { onMounted, onUnmounted, ref, watch } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 const messages = ref([]);
 const references = ref([]);
@@ -159,7 +162,8 @@ const sendMessage = async message => {
 };
 
 const saveProjectName = () => {
-  database.update(props.project);
+  const update = x => x.name = props.project.name;
+  database.updateFields(props.project, update);
   showInputModal.value = false;
 };
 

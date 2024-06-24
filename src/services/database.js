@@ -39,6 +39,13 @@ class Database {
     this.onDocumentUpdated$.next(document);
   }
 
+  updateFields(id, update) {
+    const document = JSON.parse(localStorage.getItem(id));
+    Object.assign(document, update);
+    localStorage.setItem(id, JSON.stringify(document));
+    this.onDocumentUpdated$.next(document);
+  }
+
   delete(table, id) {
     const tableIdsJson = localStorage.getItem(`${ table }_ids`) || '[]';
     const tableIds = JSON.parse(tableIdsJson);

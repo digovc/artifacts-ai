@@ -1,7 +1,11 @@
 <template>
   <div class="h-full border rounded overflow-hidden flex flex-col">
-    <div class="text-sm font-thin p-1 px-2 border-b">
-      {{ fileName }}
+    <div class="text-sm font-thin p-1 px-2 border-b flex space-x-2 group items-center cursor-pointer"
+         @click="$emit('onOpenTitleModal')">
+      <div>
+        {{ fileName }}
+      </div>
+      <FontAwesomeIcon :icon="faPen" class="text-xs text-gray-400 invisible group-hover:visible"/>
     </div>
     <div class="grow" v-if="content !== ''">
       <vue-monaco-editor :language="language" theme="vs" :options="editorOptions" :value="content"/>
@@ -11,8 +15,12 @@
 <script setup>
 import { editorLanguages } from "@/constants/editor-languages.js";
 import { ref, watch } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 const language = ref('plaintext')
+
+defineEmits(['onOpenTitleModal'])
 
 const props = defineProps({
   fileName: String,
