@@ -1,6 +1,6 @@
 import database from "@/services/database.js";
-import openai from "@/services/providers/openai.js";
 import streamProvider from "@/services/stream-provider.js";
+import groq from "@/services/providers/groq.js";
 
 class MessageSender {
   async send(message, projectId) {
@@ -40,7 +40,8 @@ class MessageSender {
     };
 
     streamProvider.onStart$.next(0)
-    await openai.sendMessage(messages, onData);
+    // await openai.sendMessage(messages, onData);
+    await groq.sendMessage(messages, onData);
     streamProvider.onEnd$.next(0)
 
     const response = content;

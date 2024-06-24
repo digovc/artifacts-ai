@@ -1,6 +1,6 @@
 <template>
   <div class="mb-5 flex space-x-2 items-center">
-    <label :for="label" class="block mb-1 whitespace-nowrap">{{ label }}</label>
+    <label :for="label" class="block mb-1 whitespace-nowrap w-24">{{ label }}</label>
     <input v-if="type === 'text'" :id="label" :value="modelValue" @input="updateValue" class="w-full p-2 border rounded"
            type="text"/>
     <input v-if="type === 'password'" :id="label" :value="modelValue" @input="updateValue" class="w-full p-2 border rounded"
@@ -13,9 +13,7 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps } from 'vue';
-
-defineProps({
+  defineProps({
   label: String,
   type: String,
   options: Array,
