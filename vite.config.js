@@ -14,7 +14,7 @@ export default defineConfig({
     }
   },
   assetsInclude: ['./src/prompts/*.md'],
-  base: process.env.NODE_ENV === 'production'
+  base: process.env.NODE_ENV === 'github'
     ? '/artifacts-ai/'
     : '/',
 })
