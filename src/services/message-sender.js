@@ -60,11 +60,11 @@ class MessageSender {
     for (const reference of references) {
       const extension = this._getExtension(reference.name);
 
-      lines.push(`reference_start {{ ${ reference.name } }}`);
+      lines.push(`--reference_start {{ ${ reference.name } }}`);
       lines.push('```' + extension);
       lines.push(reference.content);
       lines.push('```');
-      lines.push('reference_end');
+      lines.push('--reference_end');
     }
 
     return lines.join('\n');
@@ -78,11 +78,11 @@ class MessageSender {
 
     for (const artifact of artifacts) {
       const extension = this._getExtension(artifact.name);
-      lines.push(`artifact_start {{ ${ artifact.name } }}`);
+      lines.push(`--artifact_start {{ ${ artifact.name } }}`);
       lines.push('```' + extension);
       lines.push(artifact.content);
       lines.push('```');
-      lines.push('artifact_end');
+      lines.push('--artifact_end');
     }
 
     return lines.join('\n');
@@ -142,13 +142,13 @@ class MessageSender {
     let currentArtifact = null;
 
     for (const line of lines) {
-      if (line.trim().startsWith('`artifact_start')) {
-        const name = line.replace('`artifact_start', '').trim().replace('`', '');
+      if (line.trim().includes('--artifact_start')) {
+        const name = line.replace('--artifact_start', '').trim();
         currentArtifact = { name: name, contentLines: [] };
         continue;
       }
 
-      if (line.trim().startsWith('`artifact_end')) {
+      if (line.trim().includes('--artifact_end')) {
         let contentLines = currentArtifact.contentLines;
 
         for (let i = 0; i < 2; i++) {
