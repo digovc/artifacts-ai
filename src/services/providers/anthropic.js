@@ -10,7 +10,6 @@ class Anthropic {
       headers: {
         'Authorization': `Bearer ${ ANTHROPIC_API_KEY }`,
         'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
         model: 'claude-3-5-sonnet-20240620',

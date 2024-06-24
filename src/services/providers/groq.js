@@ -10,10 +10,6 @@ class Groq {
       headers: {
         'Authorization': `Bearer ${ GROQ_API_KEY }`,
         'Content-Type': 'application/json',
-        'Accept': '*/*',
-        'Cache-Control': 'no-cache',
-        'Origin': 'https://chat.bitgestor.com',
-        'Referer': 'https://chat.bitgestor.com/'
       },
       body: JSON.stringify({
         model: 'llama3-70b-8192',

@@ -10,10 +10,6 @@ class DeepSeek {
       headers: {
         'Authorization': `Bearer ${ DEEPSEEK_API_KEY }`,
         'Content-Type': 'application/json',
-        'Accept': '*/*',
-        'Cache-Control': 'no-cache',
-        'Origin': 'https://chat.bitgestor.com',
-        'Referer': 'https://chat.bitgestor.com/'
       },
       body: JSON.stringify({
         model: 'deepseek-coder',
@@ -25,7 +21,7 @@ class DeepSeek {
         messages: messages
       })
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${ response.status }`);
     }
