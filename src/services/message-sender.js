@@ -27,13 +27,12 @@ class MessageSender {
     const historyMessages = database.getByFilter("messages", x => x.projectId === projectId);
 
     for (const historyMessage of historyMessages) {
-      messages.push({ role: historyMessage.from, content: historyMessage.contentComplete || historyMessage.content });
+      messages.push({ role: historyMessage.from, content: historyMessage.content });
     }
 
     messages.push({ role: "user", content: message });
 
     let content = ''
-
 
     const onData = (part) => {
       content += part
@@ -159,7 +158,7 @@ class MessageSender {
 
         currentArtifact.content = contentLines.join('\n');
         const name = currentArtifact.name;
-        message.push(`[${ name }](#artifact://${ name })`);
+        message.push(`**[${ name }](#artifact://${ name })**`);
         artifacts.push(currentArtifact);
         currentArtifact = null;
         continue;

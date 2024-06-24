@@ -52,9 +52,15 @@
         <Version/>
       </div>
       <div class="flex justify-end space-x-2">
-        <Button :icon="faSave">Save</Button>
-        <Button :icon="faCopy">Copy</Button>
-        <Button :icon="faTrash">Delete</Button>
+        <Button :icon="faSave" @click="saveArtifact">
+          Save
+        </Button>
+        <Button :icon="faCopy" @click="copyArtifact">
+          Copy
+        </Button>
+        <Button :icon="faTrash" @click="deleteArtifact(selectedArtifact)">
+          Delete
+        </Button>
       </div>
     </div>
   </div>
@@ -70,6 +76,8 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
 import { filter, Subject, takeUntil } from "rxjs";
+import fileSaver from "@/services/file.saver.js";
+import clipboard from "@/services/clipboard.js";
 
 const artifacts = ref([]);
 const selectedArtifact = ref({});
@@ -98,7 +106,7 @@ const loadArtifacts = () => {
 const createArtifact = () => {
   const projectId = props.project.id;
 
-  const name = `artifact-${new Date().getTime()}.txt`;
+  const name = `artifact-${ new Date().getTime() }.txt`;
 
   const newArtifact = {
     projectId,
@@ -111,12 +119,24 @@ const createArtifact = () => {
 }
 
 const deleteArtifact = (artifact) => {
+  if (!artifact.id) return;
+
   database.delete("artifacts", artifact.id);
   artifacts.value = artifacts.value.filter(x => x.id !== artifact.id);
 
   if (selectedArtifact.value.id === artifact.id) {
     selectedArtifact.value = {};
   }
+}
+
+const saveArtifact = () => {
+  if (!selectedArtifact.value.id) return;
+  fileSaver.saveFile(selectedArtifact.value.name, selectedArtifact.value.content);
+}
+
+const copyArtifact = () => {
+  if (!selectedArtifact.value.id) return;
+  clipboard.copy(selectedArtifact.value.content);
 }
 
 onMounted(() => {
