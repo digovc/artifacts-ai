@@ -40,9 +40,9 @@ class MessageSender {
       streamProvider.onData$.next(part)
     };
 
-    streamProvider.onStart$.next()
+    streamProvider.onStart$.next(0)
     await openai.sendMessage(messages, onData);
-    streamProvider.onEnd$.next()
+    streamProvider.onEnd$.next(0)
 
     const response = content;
 
@@ -151,8 +151,12 @@ class MessageSender {
 
       if (line.trim().startsWith('`artifact_end')) {
         let contentLines = currentArtifact.contentLines;
-        contentLines.shift();
-        contentLines.pop();
+
+        for (let i = 0; i < 2; i++) {
+          contentLines.shift();
+          contentLines.pop();
+        }
+
         currentArtifact.content = contentLines.join('\n');
         const name = currentArtifact.name;
         message.push(`[${ name }](#artifact://${ name })`);
