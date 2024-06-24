@@ -36,12 +36,10 @@ import Button from "@/components/Button.vue";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import Empty from "@/components/Empty.vue";
 import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
 import database from "@/services/database.js";
 import globalCommands from "@/services/global-commands.js";
 
 const projects = ref([]);
-const router = useRouter();
 
 const loadProjects = () => {
   const allProjects = database.getAll("projects");

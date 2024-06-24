@@ -1,5 +1,5 @@
 <template>
-  <Card @click="openProject" class="group" v-if="!project.isDeleted">
+  <Card @click="openProject" class="group" v-if="!isDeleted">
     <div class="text-lg uppercase">
       {{ project.name }}
     </div>
@@ -19,8 +19,10 @@ import { useRouter } from "vue-router";
 import MiniButton from "@/components/MiniButton.vue";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import database from "@/services/database.js";
+import { ref } from "vue";
 
 const router = useRouter();
+const isDeleted = ref(false);
 
 const props = defineProps({
   project: Object,
@@ -32,12 +34,12 @@ const openProject = () => {
 
 const deleteProject = (event) => {
   const projectId = props.project.id;
-  props.project.isDeleted = true;
   database.delete("projects", projectId);
   const itemFilter = (item) => item.projectId === projectId;
   database.deleteByFilter("messages", itemFilter);
   database.deleteByFilter("artifacts", itemFilter);
   database.deleteByFilter("references", itemFilter);
+  isDeleted.value = true;
   event.stopPropagation();
   return false;
 };

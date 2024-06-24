@@ -1,5 +1,5 @@
 <template>
-  <div class="group space-y-2">
+  <div class="group space-y-2" v-if="!isDeleted">
     <div class="flex space-x-4">
       <div v-if="message.from === 'assistant'">
         <div class="bg-gray-100 rounded-full w-12 h-12 flex justify-center items-center">
@@ -23,7 +23,7 @@
         <MiniButton :icon="faCopy" @click="copy"/>
         <MiniButton :icon="faEdit"/>
         <MiniButton :icon="faRefresh"/>
-        <MiniButton :icon="faTrash"/>
+        <MiniButton :icon="faTrash" @click="deleteMessage"/>
       </div>
     </div>
   </div>
@@ -34,6 +34,10 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCopy, faEdit, faRefresh, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import Markdown from "@/components/Markdown.vue";
 import clipboard from "@/services/clipboard.js";
+import database from "@/services/database.js";
+import { ref } from "vue";
+
+const isDeleted = ref(false)
 
 const props = defineProps({
   message: Object
@@ -41,5 +45,11 @@ const props = defineProps({
 
 const copy = () => {
   clipboard.copy(props.message.content);
+}
+
+const deleteMessage = () => {
+  if (!props.message.id) return
+  database.delete("messages", props.message.id)
+  isDeleted.value = true
 }
 </script>
