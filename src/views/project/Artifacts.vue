@@ -92,7 +92,7 @@ import { onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
 import { filter, Subject, takeUntil } from "rxjs";
-import fileSaver from "@/services/file.saver.js";
+import fileSaver from "@/services/file-saver.js";
 import clipboard from "@/services/clipboard.js";
 import Modal from "@/components/Modal.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
