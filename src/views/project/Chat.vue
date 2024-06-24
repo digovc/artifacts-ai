@@ -24,21 +24,8 @@
       </div>
     </div>
     <div>
-      <div class="flex space-x-2 overflow-x-auto py-4" v-if="references.length">
-        <Chip v-for="reference in references" :key="reference.id" :reference="reference"
-              @onClick="openReference(reference)"
-              @onDeleteClick="deleteReference(reference)">
-          {{ reference.name }}
-        </Chip>
-      </div>
-      <div v-else class="text-center pt-8 flex justify-center items-center space-x-4">
-        <Button :icon="faFile" @click="selectReferences">
-          Add references
-        </Button>
-        <div class="text-xs font-thin">
-          You can add files as references
-        </div>
-      </div>
+      <References :references="references" @onOpenReference="openReference" @onDeleteReference="deleteReference"
+                  @onSelectReference="selectReferences"/>
     </div>
     <div>
       <NewMessage @onAddReferenceClick="selectReferences" :project="project" @onSendMessage="sendMessage"/>
@@ -61,20 +48,19 @@
   </Modal>
 </template>
 <script setup>
-import Title from "@/components/Title.vue";
-import NewMessage from "@/views/project/NewMessage.vue";
-import Chip from "@/components/Chip.vue";
-import Message from "@/views/project/Message.vue";
-import { onMounted, onUnmounted, ref, watch } from "vue";
-import database from "@/services/database.js";
-import Empty from "@/components/Empty.vue";
 import Button from "@/components/Button.vue";
-import { faFile } from "@fortawesome/free-solid-svg-icons";
-import messageSender from "@/services/message-sender.js";
-import { filter, Subject, takeUntil } from "rxjs";
-import TempMessage from "@/views/project/TempMessage.vue";
-import streamProvider from "@/services/stream-provider.js";
+import Empty from "@/components/Empty.vue";
+import Message from "@/views/project/Message.vue";
 import Modal from "@/components/Modal.vue";
+import NewMessage from "@/views/project/NewMessage.vue";
+import References from "@/views/project/References.vue";
+import TempMessage from "@/views/project/TempMessage.vue";
+import Title from "@/components/Title.vue";
+import database from "@/services/database.js";
+import messageSender from "@/services/message-sender.js";
+import streamProvider from "@/services/stream-provider.js";
+import { filter, Subject, takeUntil } from "rxjs";
+import { onMounted, onUnmounted, ref, watch } from "vue";
 
 const messages = ref([]);
 const references = ref([]);

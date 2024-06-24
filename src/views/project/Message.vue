@@ -20,7 +20,7 @@
         12/12/2021 12:00
       </div>
       <div class="flex space-x-2 justify-end">
-        <MiniButton :icon="faCopy"/>
+        <MiniButton :icon="faCopy" @click="copy"/>
         <MiniButton :icon="faEdit"/>
         <MiniButton :icon="faRefresh"/>
         <MiniButton :icon="faTrash"/>
@@ -33,8 +33,13 @@ import MiniButton from "@/components/MiniButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCopy, faEdit, faRefresh, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import Markdown from "@/components/Markdown.vue";
+import clipboard from "@/services/clipboard.js";
 
-defineProps({
+const props = defineProps({
   message: Object
 })
+
+const copy = () => {
+  clipboard.copy(props.message.content);
+}
 </script>
