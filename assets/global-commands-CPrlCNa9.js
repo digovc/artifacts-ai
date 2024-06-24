@@ -1,0 +1,1 @@
+import{d as o}from"./database-DMz8BCwo.js";import{k as t}from"./index-BJzl2igR.js";class r{createProject(){const e={name:"New Project",description:"My new awesome project",created:new Date().toISOString()};o.insert("projects",e),t.push(`/projects/${e.id}`)}}const n=new r;export{n as g};
