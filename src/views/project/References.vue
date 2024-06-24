@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @dragover.prevent @dragenter.prevent @drop="handleDrop">
     <div class="flex space-x-2 overflow-x-auto py-4" v-if="references.length">
       <Chip v-for="reference in references" :key="reference.id" :reference="reference"
             @onClick="$emit('onOpenReference', reference)"
@@ -26,5 +26,15 @@ defineProps({
   references: Array
 })
 
-defineEmits(["onOpenReference", "onDeleteReference", "onSelectReference"])
+const emits = defineEmits(["onOpenReference", "onDeleteReference", "onSelectReference", "onFilesDrop"])
+
+const handleDrop = event => {
+  const files = event.dataTransfer.files;
+  if (files.length) {
+    event.preventDefault();
+    event.stopPropagation();
+    const fileArray = Array.from(files);
+    emits("onFilesDrop", fileArray);
+  }
+};
 </script>

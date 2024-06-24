@@ -25,7 +25,7 @@
     </div>
     <div>
       <References :references="references" @onOpenReference="openReference" @onDeleteReference="deleteReference"
-                  @onSelectReference="selectReferences"/>
+                  @onSelectReference="selectReferences" @onFilesDrop="handleFilesDrop"/>
     </div>
     <div>
       <NewMessage @onAddReferenceClick="selectReferences" :project="project" @onSendMessage="sendMessage"/>
@@ -127,6 +127,12 @@ const createReferenceToFile = async file => {
     database.insert("references", reference);
     references.value.push(reference);
   };
+};
+
+const handleFilesDrop = async files => {
+  for (const file of files) {
+    await createReferenceToFile(file);
+  }
 };
 
 const deleteReference = reference => {
