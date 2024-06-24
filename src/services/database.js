@@ -39,11 +39,15 @@ class Database {
     this.onDocumentUpdated$.next(document);
   }
 
-  updateFields(id, update) {
+  updateFields(id, update, emitOnUpdate = true) {
+    console.log('updateFields', id, update);
     const document = JSON.parse(localStorage.getItem(id));
     Object.assign(document, update);
     localStorage.setItem(id, JSON.stringify(document));
-    this.onDocumentUpdated$.next(document);
+
+    if (emitOnUpdate) {
+      this.onDocumentUpdated$.next(document);
+    }
   }
 
   delete(table, id) {

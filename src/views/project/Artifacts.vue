@@ -21,7 +21,7 @@
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto">
         <Editor v-if="selectedArtifact.id" :fileName="selectedArtifact.name" :content="selectedArtifact.content"
-                @onOpenTitleModal="openArtifactTitleModal"/>
+                @onOpenTitleModal="openArtifactTitleModal" @onContentChange="updateArtifactContent"/>
         <Empty v-if="!artifacts.length">
           <template #title>
             No artifact created
@@ -100,6 +100,7 @@ const selectedArtifact = ref({});
 const onDestroy$ = new Subject();
 const showInputModal = ref(false);
 const inputModalTitle = ref("");
+const contentChangeTimeout = ref(-1);
 
 const props = defineProps({
   project: Object,
@@ -168,6 +169,16 @@ const saveArtifactName = () => {
   const update = { name: inputModalTitle.value };
   database.updateFields(selectedArtifact.value.id, update);
   showInputModal.value = false;
+}
+
+const updateArtifactContent = (content) => {
+  if (!selectedArtifact.value.id) return;
+  clearTimeout(contentChangeTimeout.value);
+
+  contentChangeTimeout.value = setTimeout(() => {
+    const update = { content };
+    database.updateFields(selectedArtifact.value.id, update, false);
+  }, 1000);
 }
 
 onMounted(() => {

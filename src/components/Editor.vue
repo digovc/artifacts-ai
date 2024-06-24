@@ -8,7 +8,8 @@
       <FontAwesomeIcon :icon="faPen" class="text-xs text-gray-400 invisible group-hover:visible"/>
     </div>
     <div class="grow" v-if="content !== ''">
-      <vue-monaco-editor :language="language" theme="vs" :options="editorOptions" :value="content"/>
+      <vue-monaco-editor :language="language" theme="vs" :options="editorOptions" :value="content"
+                         @change="$emit('onContentChange', $event)"/>
     </div>
   </div>
 </template>
@@ -20,7 +21,7 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 
 const language = ref('plaintext')
 
-defineEmits(['onOpenTitleModal'])
+defineEmits(['onOpenTitleModal', 'onContentChange'])
 
 const props = defineProps({
   fileName: String,
