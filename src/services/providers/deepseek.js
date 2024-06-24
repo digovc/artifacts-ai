@@ -1,24 +1,31 @@
 import settings from "@/services/settings.js";
 
-class Anthropic {
+class DeepSeek {
   async sendMessage(messages, onData) {
-    const config = settings.getSettings()
-    const ANTHROPIC_API_KEY = config.providers.anthropic.apiKey
+    const config = settings.getSettings();
+    const DEEPSEEK_API_KEY = config.providers.deepseek.apiKey;
 
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${ ANTHROPIC_API_KEY }`,
+        'Authorization': `Bearer ${ DEEPSEEK_API_KEY }`,
         'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
+        'Accept': '*/*',
+        'Cache-Control': 'no-cache',
+        'Origin': 'https://chat.bitgestor.com',
+        'Referer': 'https://chat.bitgestor.com/'
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20240620',
+        model: 'deepseek-coder',
         stream: true,
+        frequency_penalty: 0,
+        presence_penalty: 0,
+        temperature: 0.6,
+        top_p: 1,
         messages: messages
       })
     });
-
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${ response.status }`);
     }
@@ -58,4 +65,4 @@ class Anthropic {
   }
 }
 
-export default new Anthropic();
+export default new DeepSeek();
