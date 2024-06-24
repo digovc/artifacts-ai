@@ -4,7 +4,7 @@ A new way to work together with AI.
 
 [![Artifacts AI Demo](https://img.youtube.com/vi/x5nJSPIKfvo/0.jpg)](https://youtu.be/x5nJSPIKfvo)
 
-[Demostration](./Artifacts AI Demo.mp4)
+[ACCESS HERE](https://digovc.github.io/artifacts-ai/)
 
 Inspired by the artifacts introduced by Anthropic's chat interface, this project is designed to interact with text files of any type continuously until the user is satisfied with the result.
 
