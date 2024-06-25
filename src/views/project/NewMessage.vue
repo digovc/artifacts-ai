@@ -14,10 +14,7 @@
   </div>
   <Context :x="menuContextX" :y="menuContextY" v-if="showMenuContext">
     <div class="flex flex-col">
-      <div>context</div>
-      <div>context</div>
-      <div>context</div>
-      <div>context</div>
+      show avaliable providers here for select
     </div>
   </Context>
 </template>

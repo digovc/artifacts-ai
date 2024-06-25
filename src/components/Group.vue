@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-10 border-b pb-4">
+  <div class="mb-10 border-b pb-4 space-y-8">
     <h2 class="mb-5 text-xl font-bold">{{ title }}</h2>
     <slot></slot>
   </div>

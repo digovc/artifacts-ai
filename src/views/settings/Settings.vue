@@ -6,20 +6,24 @@
         <Field v-model="settings.general.theme" :options="['light', 'dark']" label="Theme" type="select"/>
       </Subgroup>
     </Group>
-    <Group title="LLM Provider">
-      <Subgroup title="Configuration">
-        <Field v-model="settings.provider.name" :options="providerOptions.map(option => option.label)" label="Provider"
-               type="select"/>
-        <Field v-model="settings.provider.model" :options="modelsForSelectedProvider" label="Model" type="select"/>
-        <Field v-model="settings.provider.apiKey" label="API Key" type="password"/>
-      </Subgroup>
+    <Group title="LLM Providers">
+      <Button @click="addProvider">Add Provider</Button>
+      <div v-for="(provider, index) in settings.providers" :key="index" class="pb-4 mb-4">
+        <Subgroup :title="'Provider ' + (index + 1)">
+          <Field v-model="provider.name" :options="providerOptions.map(option => option.label)" label="Provider"
+                 type="select"/>
+          <Field v-model="provider.model" :options="getModelsForProvider(provider.name)" label="Model" type="select"/>
+          <Field v-model="provider.apiKey" label="API Key" type="password"/>
+          <Button class="mt-2" @click="() => removeProvider(index)">Remove</Button>
+        </Subgroup>
+      </div>
     </Group>
     <Button @click="saveSettings">Save Settings</Button>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
+import { onMounted, ref } from 'vue';
 import Group from '@/components/Group.vue';
 import Subgroup from '@/components/Subgroup.vue';
 import Field from '@/components/Field.vue';
@@ -30,31 +34,44 @@ import { providers } from "@/constants/providers.js";
 
 const settings = ref({
   general: { theme: 'light' },
-  provider: { name: '', url: '', model: '', apiKey: '' }
+  providers: []
 });
 
 const providerOptions = providers;
 
-const modelsForSelectedProvider = ref([]);
-
 const loadSettings = () => {
   const settingsData = database.get('settings_0');
   if (!settingsData?.id) return;
-  settingsData.provider = settingsData.provider || {};
+  settingsData.providers = settingsData.providers || [];
   settings.value = settingsData;
 };
 
 const saveSettings = () => {
-  const selectedProvider = providerOptions.find(option => option.label === settings.value.provider.name);
-  settings.value.provider.url = selectedProvider ? selectedProvider.url : '';
+  settings.value.providers.forEach(provider => {
+    const selectedProvider = providerOptions.find(option => option.label === provider.name);
+    provider.url = selectedProvider ? selectedProvider.url : '';
+  });
+
+  if (!settings.value.providers.length) {
+    settings.value.providerSelected = settings.value.providerSelected || settings.value.providers[0].name;
+  }
+
   settings.value.id = 'settings_0';
   database.update(settings.value);
 };
 
-watch(() => settings.value.provider.name, (newProvider) => {
-  const selectedProvider = providerOptions.find(option => option.label === newProvider);
-  modelsForSelectedProvider.value = selectedProvider ? selectedProvider.models : [];
-});
+const addProvider = () => {
+  settings.value.providers.push({ name: '', model: '', apiKey: '' });
+};
+
+const removeProvider = (index) => {
+  settings.value.providers.splice(index, 1);
+};
+
+const getModelsForProvider = (providerName) => {
+  const selectedProvider = providerOptions.find(option => option.label === providerName);
+  return selectedProvider ? selectedProvider.models : [];
+};
 
 onMounted(() => {
   loadSettings();
