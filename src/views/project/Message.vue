@@ -8,6 +8,14 @@
       </div>
       <div class="grow bg-gray-100 p-2 rounded-lg text-sm" :class="message.from === 'assistant' ? 'mr-16' : 'ml-16'">
         <Markdown :src="message.content"/>
+        <div class="flex space-x-1 text-xs justify-end text-gray-400">
+          <div v-if="message.provider">
+            {{ message.provider }}
+          </div>
+          <div v-if="message.model">
+            ({{ message.model }})
+          </div>
+        </div>
       </div>
       <div v-if="message.from === 'user'">
         <div class="bg-gray-100 rounded-full w-12 h-12 flex justify-center items-center">
@@ -17,12 +25,12 @@
     </div>
     <div class="flex justify-between items-center pl-16 invisible group-hover:visible">
       <div class="text-xs italic">
-        12/12/2021 12:00
+        {{ message.createdAt }}
       </div>
       <div class="flex space-x-2 justify-end">
         <MiniButton :icon="faCopy" @click="copy"/>
-        <MiniButton :icon="faEdit"/>
-        <MiniButton :icon="faRefresh"/>
+        <!--        <MiniButton :icon="faEdit"/>-->
+        <!--        <MiniButton :icon="faRefresh" @click="$emit('onRefresh')"/>-->
         <MiniButton :icon="faTrash" @click="deleteMessage"/>
       </div>
     </div>
@@ -31,7 +39,7 @@
 <script setup>
 import MiniButton from "@/components/MiniButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCopy, faEdit, faRefresh, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import Markdown from "@/components/Markdown.vue";
 import clipboard from "@/services/clipboard.js";
 import database from "@/services/database.js";

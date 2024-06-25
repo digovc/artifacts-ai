@@ -14,30 +14,41 @@
   </div>
   <Context :x="menuContextX" :y="menuContextY" v-if="showMenuContext">
     <div class="flex flex-col">
-      show avaliable providers here for select
+      <div v-for="provider in configuredProviders" :key="provider.name" @click="selectProvider(provider.name)"
+           class="cursor-pointer hover:bg-gray-200 p-2">
+        {{ provider.name }}
+      </div>
     </div>
   </Context>
 </template>
+
 <script setup>
-import MiniButton from "@/components/MiniButton.vue";
-import IconButton from "@/components/IconButton.vue";
-import { faArrowRight, faFileLines, faRobot } from "@fortawesome/free-solid-svg-icons";
-import { ref } from "vue";
 import Context from "@/components/Context.vue";
+import IconButton from "@/components/IconButton.vue";
+import MiniButton from "@/components/MiniButton.vue";
+import { SETTINGS_KEY } from "@/services/settings.js";
+import database from "@/services/database.js";
+import { faArrowRight, faFileLines, faRobot } from "@fortawesome/free-solid-svg-icons";
+import { onMounted, ref } from "vue";
 
 const inputMessage = ref("");
 const emits = defineEmits(["onAddReferenceClick", "onSendMessage"]);
 const menuContextX = ref(0);
 const menuContextY = ref(0);
 const showMenuContext = ref(false);
+const configuredProviders = ref([]);
+const selectedProvider = ref("");
 
 const sendMessage = async (event) => {
   if (event.shiftKey) return;
+
   const message = inputMessage.value.trim();
   if (!message) return;
+
   inputMessage.value = "";
   emits("onSendMessage", message);
   event.preventDefault();
+
   return false;
 };
 
@@ -46,4 +57,29 @@ const openMenuContext = (event) => {
   menuContextY.value = event.clientY;
   showMenuContext.value = true;
 };
+
+const selectProvider = (provider) => {
+  selectedProvider.value = provider;
+  saveSelectedProvider(provider);
+  showMenuContext.value = false;
+};
+
+const saveSelectedProvider = (provider) => {
+  let settingsData = database.get(SETTINGS_KEY);
+  if (!settingsData) {
+    settingsData = { id: SETTINGS_KEY, general: {}, providers: [], providerSelected: provider };
+  } else {
+    settingsData.providerSelected = provider;
+  }
+  database.update(settingsData);
+};
+
+const loadConfiguredProviders = () => {
+  const settingsData = database.get(SETTINGS_KEY);
+  configuredProviders.value = settingsData?.providers || [];
+};
+
+onMounted(() => {
+  loadConfiguredProviders();
+});
 </script>

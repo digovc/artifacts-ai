@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isVisible" ref="contextMenu" :class="computedClasses" :style="computedStyle">
+  <div v-if="isVisible" ref="contextMenu" class="bg-white rounded-lg fixed shadow-lg overflow-hidden" :style="computedStyle">
     <slot/>
   </div>
 </template>
@@ -53,7 +53,7 @@ const computedStyle = computed(() => {
 });
 
 const computedClasses = computed(() => {
-  return "bg-white rounded-lg p-4 fixed shadow-lg";
+  return "bg-white rounded-lg fixed shadow-lg";
 });
 
 onMounted(() => {

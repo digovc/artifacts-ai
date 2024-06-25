@@ -4,10 +4,17 @@ import { providers } from "@/constants/providers.js";
 class LLMProvider {
   async sendMessage(messages, onData) {
     const config = settings.getSettings();
-    const provider = providers.find(p => p.label === config.provider.name);
+    const selectedProviderName = config.providerSelected;
+    const provider = providers.find(p => p.label === selectedProviderName);
+    const providerOnConfig = config.providers.find(p => p.name === selectedProviderName);
+
+    if (!provider) {
+      throw new Error(`Provider ${ selectedProviderName } is not configured.`);
+    }
+
     const url = provider.url;
-    const apiKey = config.provider.apiKey;
-    const model = config.provider.model;
+    const apiKey = providerOnConfig.apiKey;
+    const model = providerOnConfig.model;
 
     const response = await fetch(`${ url }/v1/chat/completions`, {
       method: 'POST',
@@ -32,9 +39,8 @@ class LLMProvider {
 
     while (true) {
       const { done, value } = await reader.read();
-      if (done) {
-        break;
-      }
+
+      if (done) break;
 
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split("\n");
@@ -43,9 +49,8 @@ class LLMProvider {
         const line = lines[i].trim();
         if (line.startsWith("data: ")) {
           const data = line.substring(6);
-          if (data === "[DONE]") {
-            return;
-          }
+          if (data === "[DONE]") return;
+
           try {
             const parsed = JSON.parse(data);
             const content = parsed.choices[0].delta?.content || "";

@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 space-y-12 w-2/4 m-auto">
+  <div class="space-y-12 w-2/4 m-auto h-full overflow-y-auto p-8">
     <Title>Settings</Title>
     <Group title="General">
       <Subgroup title="Theme">
@@ -31,6 +31,7 @@ import Button from '@/components/Button.vue';
 import database from '@/services/database.js';
 import Title from "@/components/Title.vue";
 import { providers } from "@/constants/providers.js";
+import { SETTINGS_KEY } from "@/services/settings.js";
 
 const settings = ref({
   general: { theme: 'light' },
@@ -40,7 +41,7 @@ const settings = ref({
 const providerOptions = providers;
 
 const loadSettings = () => {
-  const settingsData = database.get('settings_0');
+  const settingsData = database.get(SETTINGS_KEY);
   if (!settingsData?.id) return;
   settingsData.providers = settingsData.providers || [];
   settings.value = settingsData;
@@ -52,11 +53,11 @@ const saveSettings = () => {
     provider.url = selectedProvider ? selectedProvider.url : '';
   });
 
-  if (!settings.value.providers.length) {
-    settings.value.providerSelected = settings.value.providerSelected || settings.value.providers[0].name;
+  if (settings.value.providers.length && !settings.value.providerSelected) {
+    settings.value.providerSelected = settings.value.providers[0].name;
   }
 
-  settings.value.id = 'settings_0';
+  settings.value.id = SETTINGS_KEY;
   database.update(settings.value);
 };
 

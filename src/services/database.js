@@ -26,6 +26,9 @@ class Database {
 
   insert(table, document) {
     document.id = `${ table }_${ uuidv4() }`
+    document.createdAt = new Date().toISOString();
+    document.updatedAt = new Date().toISOString();
+
     const tableIdsJson = localStorage.getItem(`${ table }_ids`) || '[]';
     const tableIds = JSON.parse(tableIdsJson);
     tableIds.push(document.id);
@@ -35,6 +38,7 @@ class Database {
   }
 
   update(document) {
+    document.updatedAt = new Date().toISOString();
     localStorage.setItem(document.id, JSON.stringify(document));
     this.onDocumentUpdated$.next(document);
   }
@@ -43,6 +47,7 @@ class Database {
     console.log('updateFields', id, update);
     const document = JSON.parse(localStorage.getItem(id));
     Object.assign(document, update);
+    document.updatedAt = new Date().toISOString();
     localStorage.setItem(id, JSON.stringify(document));
 
     if (emitOnUpdate) {

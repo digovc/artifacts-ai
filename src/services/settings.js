@@ -1,11 +1,14 @@
+export const SETTINGS_KEY = 'settings_0';
+
 class Settings {
+
   isConfigured() {
     const settings = this.getSettings();
-    return settings?.provider?.apiKey || false;
+    return settings?.providers?.length > 0;
   }
 
   getSettings() {
-    const settings = localStorage.getItem('settings_0');
+    const settings = localStorage.getItem(SETTINGS_KEY);
     return JSON.parse(settings);
   }
 }

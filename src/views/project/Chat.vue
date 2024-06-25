@@ -9,7 +9,7 @@
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
         <div class="flex flex-col space-y-4" v-if="messages.length">
-          <Message v-for="message in messages" :key="message.id" :message="message"/>
+          <Message v-for="message in messages" :key="message.id" :message="message" @onRefresh=""/>
           <TempMessage/>
         </div>
         <Empty v-else :icon="faMessage">
@@ -29,7 +29,7 @@
                   @onSelectReference="selectReferences" @onFilesDrop="handleFilesDrop"/>
     </div>
     <div>
-      <NewMessage @onAddReferenceClick="selectReferences" :project="project" @onSendMessage="sendMessage"/>
+      <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage"/>
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
@@ -158,7 +158,9 @@ const sendMessage = async message => {
   };
 
   database.insert("messages", newMessage);
-  await messageSender.send(message, projectId);
+  await messageSender.send(message, projectId).catch(() => {
+    streamProvider.onEnd$.next(0);
+  });
 };
 
 const saveProjectName = () => {

@@ -1,6 +1,8 @@
 import database from "@/services/database.js";
 import streamProvider from "@/services/stream-provider.js";
 import llmProvider from "@/services/llm-provider.js";
+import settings from "@/services/settings.js";
+import { providers } from "@/constants/providers.js";
 
 class MessageSender {
   async send(message, projectId) {
@@ -96,11 +98,17 @@ class MessageSender {
   }
 
   _saveMessage(message, messageComplete, projectId) {
+    const config = settings.getSettings()
+    const provider = providers.find(p => p.label === config.providerSelected);
+    const providerOnConfig = config.providers.find(p => p.name === config.providerSelected);
+
     const newProviderMessage = {
       content: message,
       contentComplete: messageComplete,
       projectId,
       from: "assistant",
+      provider: provider.label,
+      model: providerOnConfig.model,
     };
 
     database.insert("messages", newProviderMessage);
