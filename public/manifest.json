@@ -1,0 +1,26 @@
+{
+  "short_name": "Artifacts AI",
+  "name": "Artifacts AI",
+  "description": "Artifacts AI is an innovative application for collaborating with AI in the creation and modification of text files of any type.",
+  "start_url": "/artifacts-ai",
+  "display": "fullscreen",
+  "background_color": "#ffffff",
+  "theme_color": "#0000ff",
+  "icons": [
+    {
+      "src": "/logo-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    }
+  ]
+}
