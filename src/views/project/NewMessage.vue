@@ -12,7 +12,7 @@
       </div>
     </div>
   </div>
-  <Context :x="menuContextX" :y="menuContextY" v-if="showMenuContext">
+  <Context :x="menuContextX" :y="menuContextY" v-if="showMenuContext" @onClose="showMenuContext = false">
     <div class="flex flex-col">
       <div v-for="provider in configuredProviders" :key="provider.name" @click="selectProvider(provider.name)"
            class="cursor-pointer hover:bg-gray-200 p-2">

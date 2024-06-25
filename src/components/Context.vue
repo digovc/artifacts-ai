@@ -1,5 +1,6 @@
 <template>
-  <div v-if="isVisible" ref="contextMenu" class="bg-white rounded-lg fixed shadow-lg overflow-hidden" :style="computedStyle">
+  <div class="bg-white rounded-lg fixed shadow-lg overflow-hidden z-10 border min-w-48" v-if="isVisible"
+       ref="contextMenu" :style="computedStyle">
     <slot/>
   </div>
 </template>
@@ -18,9 +19,13 @@ const props = defineProps({
   },
 });
 
+const emit = defineEmits(['onClose']);
+
 const isVisible = ref(false);
 const viewport = ref({ width: 0, height: 0 });
 const contextMenu = ref(null);
+
+watch([() => props.x, () => props.y], () => updateViewportSize());
 
 const updateViewportSize = () => {
   viewport.value = {
@@ -38,12 +43,10 @@ const computedStyle = computed(() => {
   if (contextMenu.value) {
     const { offsetWidth: menuWidth, offsetHeight: menuHeight } = contextMenu.value;
 
-    // Compute if there is enough space downwards
     if (props.y + menuHeight > viewport.value.height) {
       style.top = `${ props.y - menuHeight }px`;
     }
 
-    // Compute if there is enough space rightwards
     if (props.x + menuWidth > viewport.value.width) {
       style.left = `${ props.x - menuWidth }px`;
     }
@@ -52,24 +55,24 @@ const computedStyle = computed(() => {
   return style;
 });
 
-const computedClasses = computed(() => {
-  return "bg-white rounded-lg fixed shadow-lg";
-});
+const handleClickOutside = (event) => {
+  if (contextMenu.value && !contextMenu.value.contains(event.target)) {
+    emit('onClose');
+  }
+};
 
 onMounted(() => {
   updateViewportSize();
   window.addEventListener('resize', updateViewportSize);
+  document.addEventListener('click', handleClickOutside, true);
 
   nextTick(() => {
     isVisible.value = true;
   });
 });
 
-// Remove event listener when component is destroyed
 onBeforeUnmount(() => {
   window.removeEventListener('resize', updateViewportSize);
+  document.removeEventListener('click', handleClickOutside, true);
 });
-
-// Watch for prop changes and update viewport size
-watch([() => props.x, () => props.y], updateViewportSize);
 </script>
