@@ -3,7 +3,7 @@
     <div class="bg-gray-600 w-4 h-px"></div>
     <MiniButton class="border border-gray-400">
       <div class="text-xs -mb-1">
-        v.1
+        <slot/>
       </div>
     </MiniButton>
   </div>

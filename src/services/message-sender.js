@@ -29,7 +29,7 @@ class MessageSender {
     const historyMessages = database.getByFilter("messages", x => x.projectId === projectId);
 
     for (const historyMessage of historyMessages) {
-      messages.push({ role: historyMessage.from, content: historyMessage.content });
+      messages.push({ role: historyMessage.from, content: historyMessage.contentToHistory || historyMessage.content });
     }
 
     messages.push({ role: "user", content: message });
@@ -49,7 +49,7 @@ class MessageSender {
 
     const result = this._extractArtifacts(response);
 
-    this._saveMessage(result.message, response, projectId);
+    this._saveMessage(result.message, result.messageToHistory, response, projectId);
     this._saveArtifacts(result.artifacts, projectId);
   }
 
@@ -97,13 +97,14 @@ class MessageSender {
     return name.split('.').pop();
   }
 
-  _saveMessage(message, messageComplete, projectId) {
+  _saveMessage(message, messageToHistory, messageComplete, projectId) {
     const config = settings.getSettings()
     const provider = providers.find(p => p.label === config.providerSelected);
     const providerOnConfig = config.providers.find(p => p.name === config.providerSelected);
 
     const newProviderMessage = {
       content: message,
+      contentToHistory: messageComplete,
       contentComplete: messageComplete,
       projectId,
       from: "assistant",
@@ -130,6 +131,8 @@ class MessageSender {
     if (existingArtifact && existingArtifact.length) {
       const existing = existingArtifact[0];
       existing.content = artifact.content;
+      existing.versions = existing.versions || [];
+      existing.versions.push(artifact.content);
       database.update(existing);
       return;
     }
@@ -138,6 +141,9 @@ class MessageSender {
       name: artifact.name,
       content: artifact.content,
       projectId,
+      versions: [
+        artifact.content,
+      ],
     };
 
     database.insert("artifacts", newArtifact);
@@ -146,6 +152,7 @@ class MessageSender {
   _extractArtifacts(response) {
     const lines = response.split('\n');
     const message = [];
+    const messageToHistory = [];
     const artifacts = [];
     let currentArtifact = null;
 
@@ -174,9 +181,10 @@ class MessageSender {
       }
 
       message.push(line);
+      messageToHistory.push(line);
     }
 
-    return { message: message.join('\n'), artifacts };
+    return { message: message.join('\n'), messageToHistory, artifacts };
   }
 }
 

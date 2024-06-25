@@ -9,7 +9,7 @@
     </div>
     <div class="grow" v-if="content !== ''">
       <vue-monaco-editor :language="getLanguage()" theme="vs" :options="editorOptions" :value="content"
-                         @change="$emit('onContentChange', $event)"/>
+                         @change="changeValue" @focusout="saveChangedContent"/>
     </div>
   </div>
 </template>
@@ -17,12 +17,19 @@
 import { editorLanguages } from "@/constants/editor-languages.js";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { ref, watch } from "vue";
 
-defineEmits(['onOpenTitleModal', 'onContentChange'])
+const emits = defineEmits(['onOpenTitleModal', 'onContentChange'])
+const isChangePending = ref(false)
+const localContent = ref()
 
 const props = defineProps({
   fileName: String,
   content: String,
+})
+
+watch(() => props.content, () => {
+  localContent.value = props.content
 })
 
 const editorOptions = {
@@ -32,6 +39,11 @@ const editorOptions = {
   readOnly: false,
 }
 
+const changeValue = (value) => {
+  localContent.value = value
+  isChangePending.value = true
+}
+
 const getLanguage = () => {
   if (!props.fileName) return 'plaintext'
   if (!props.fileName.includes('.')) return 'plaintext'
@@ -39,5 +51,11 @@ const getLanguage = () => {
   const languages = editorLanguages.filter(x => x[0].includes(extension))
   if (languages.length > 0) return languages[0][1]
   return extension;
+}
+
+const saveChangedContent = () => {
+  if (!isChangePending.value) return
+  isChangePending.value = false
+  emits('onContentChange', localContent.value)
 }
 </script>

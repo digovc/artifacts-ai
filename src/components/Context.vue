@@ -24,6 +24,7 @@ const emit = defineEmits(['onClose']);
 const isVisible = ref(false);
 const viewport = ref({ width: 0, height: 0 });
 const contextMenu = ref(null);
+const offset = 8;
 
 watch([() => props.x, () => props.y], () => updateViewportSize());
 
@@ -36,19 +37,19 @@ const updateViewportSize = () => {
 
 const computedStyle = computed(() => {
   const style = {
-    top: `${ props.y }px`,
-    left: `${ props.x }px`,
+    top: `${ props.y + offset }px`,
+    left: `${ props.x + offset }px`,
   };
 
   if (contextMenu.value) {
     const { offsetWidth: menuWidth, offsetHeight: menuHeight } = contextMenu.value;
 
-    if (props.y + menuHeight > viewport.value.height) {
-      style.top = `${ props.y - menuHeight }px`;
+    if (props.y + menuHeight + offset > viewport.value.height) {
+      style.top = `${ props.y - menuHeight - offset }px`;
     }
 
-    if (props.x + menuWidth > viewport.value.width) {
-      style.left = `${ props.x - menuWidth }px`;
+    if (props.x + menuWidth + offset > viewport.value.width) {
+      style.left = `${ props.x - menuWidth - offset }px`;
     }
   }
 

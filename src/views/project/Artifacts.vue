@@ -48,10 +48,9 @@
     </div>
     <div class="flex justify-center pt-4" v-if="selectedArtifact.id">
       <div class="grow overflow-x-auto flex items-center">
-        <div class="italic text-sm -mr-0.5 text-gray-600">
-          Versions )
-        </div>
-        <Version/>
+        <Version v-for="(version, index) in selectedArtifact.versions" :key="index" @click="changeVersion(index)">
+          v.{{ index + 1 }}
+        </Version>
       </div>
       <div class="flex justify-end space-x-2">
         <Button :icon="faSave" @click="saveArtifact">
@@ -86,7 +85,7 @@ import Title from "@/components/Title.vue";
 import Chip from "@/components/Chip.vue";
 import Button from "@/components/Button.vue";
 import Version from "@/views/project/Version.vue";
-import { faCopy, faFileExport, faFilePen, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faFilePen, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Editor from "@/components/Editor.vue";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
@@ -102,7 +101,6 @@ const selectedArtifact = ref({});
 const onDestroy$ = new Subject();
 const showInputModal = ref(false);
 const inputModalTitle = ref("");
-const contentChangeTimeout = ref(-1);
 
 const props = defineProps({
   project: Object,
@@ -175,13 +173,19 @@ const saveArtifactName = () => {
 
 const updateArtifactContent = (content) => {
   if (!selectedArtifact.value.id) return;
-  clearTimeout(contentChangeTimeout.value);
-
-  contentChangeTimeout.value = setTimeout(() => {
-    const update = { content };
-    database.updateFields(selectedArtifact.value.id, update, false);
-  }, 1000);
+  selectedArtifact.value.versions.push(content);
+  const versions = selectedArtifact.value.versions;
+  const update = { content, versions };
+  database.updateFields(selectedArtifact.value.id, update, false);
 }
+
+const changeVersion = index => {
+  const content = selectedArtifact.value.versions[index];
+  selectedArtifact.value.content = content;
+  const update = { content };
+  database.updateFields(selectedArtifact.value.id, update, false);
+};
+
 
 onMounted(() => {
   database.onDocumentInserted$
