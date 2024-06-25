@@ -70,8 +70,8 @@
       Edit artifact name
     </template>
     <div>
-      <input name="artifact-name" v-model="inputModalTitle" placeholder="Artifact name" autofocus class="border w-80"
-             @keyup.enter="saveArtifactName">
+      <input ref="artifactNameInput" name="artifact-name" v-model="inputModalTitle" placeholder="Artifact name"
+             autofocus class="border w-80 indent-1" @keyup.enter="saveArtifactName">
     </div>
     <template #commands>
       <Button @click="saveArtifactName">
@@ -87,7 +87,7 @@ import Button from "@/components/Button.vue";
 import Version from "@/views/project/Version.vue";
 import { faCopy, faFilePen, faPlus, faSave, faTrash } from "@fortawesome/free-solid-svg-icons";
 import Editor from "@/components/Editor.vue";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import database from "@/services/database.js";
 import Empty from "@/components/Empty.vue";
 import { filter, Subject, takeUntil } from "rxjs";
@@ -101,6 +101,7 @@ const selectedArtifact = ref({});
 const onDestroy$ = new Subject();
 const showInputModal = ref(false);
 const inputModalTitle = ref("");
+const artifactNameInput = ref(null);
 
 const props = defineProps({
   project: Object,
@@ -158,10 +159,12 @@ const copyArtifact = () => {
   clipboard.copy(selectedArtifact.value.content);
 }
 
-const openArtifactTitleModal = () => {
+const openArtifactTitleModal = async () => {
   if (!selectedArtifact.value.id) return;
   inputModalTitle.value = selectedArtifact.value.name;
   showInputModal.value = true;
+  await nextTick();
+  artifactNameInput.value.select();
 }
 
 const saveArtifactName = () => {

@@ -38,8 +38,8 @@
       Edit project name
     </template>
     <div>
-      <input name="project-name" v-model="project.name" placeholder="Project name" autofocus class="border"
-             @keyup.enter="saveProjectName"/>
+      <input name="project-name" v-model="project.name" placeholder="Project name" autofocus
+             class="border w-80 indent-1" @keyup.enter="saveProjectName"/>
     </div>
     <template #commands>
       <Button @click="saveProjectName">
