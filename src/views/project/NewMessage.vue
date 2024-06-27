@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col space-y-2">
     <div class="flex space-x-2 justify-end">
-      <MiniButton :icon="faFileLines" @click="$emit('onAddReferenceClick')"/>
-      <MiniButton :icon="faRobot" @click="openMenuContext"/>
+      <MiniButton :icon="faFileLines" @click="$emit('onAddReferenceClick')" title="Add reference"/>
+      <MiniButton :icon="faRobot" @click="openMenuContext" title="Select provider"/>
     </div>
     <div class="grow relative">
-      <textarea class="w-full h-full outline-none border rounded p-2 resize-none" rows="5" autofocus
+      <textarea ref="messageInput" class="w-full h-full outline-none border rounded p-2 resize-none" rows="5" autofocus
                 placeholder="Type your message here" v-model="inputMessage" @keydown.enter="sendMessage"/>
       <div class="absolute right-2 bottom-4">
         <IconButton :icon="faArrowRight" @click="sendMessage"/>
@@ -23,21 +23,30 @@
 </template>
 
 <script setup>
+import { onMounted, ref, watch } from 'vue';
 import Context from "@/components/Context.vue";
 import IconButton from "@/components/IconButton.vue";
 import MiniButton from "@/components/MiniButton.vue";
 import { SETTINGS_KEY } from "@/services/settings.js";
 import database from "@/services/database.js";
 import { faArrowRight, faFileLines, faRobot } from "@fortawesome/free-solid-svg-icons";
-import { onMounted, ref } from "vue";
 
-const inputMessage = ref("");
+const configuredProviders = ref([]);
 const emits = defineEmits(["onAddReferenceClick", "onSendMessage"]);
+const inputMessage = ref("");
 const menuContextX = ref(0);
 const menuContextY = ref(0);
-const showMenuContext = ref(false);
-const configuredProviders = ref([]);
+const messageInput = ref(null);
 const selectedProvider = ref("");
+const showMenuContext = ref(false);
+
+const props = defineProps({
+  project: Object
+});
+
+watch(() => props.project.id, () => {
+  messageInput.value.focus();
+});
 
 const sendMessage = async (event) => {
   if (event.shiftKey) return;
@@ -81,5 +90,6 @@ const loadConfiguredProviders = () => {
 
 onMounted(() => {
   loadConfiguredProviders();
+  messageInput.value.focus();
 });
 </script>

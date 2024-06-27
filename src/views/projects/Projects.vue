@@ -6,7 +6,7 @@
       </div>
       <div>
         <Button :icon="faPlus" @click="createProject">
-          Create project
+          Create Project
         </Button>
       </div>
     </div>
@@ -23,7 +23,7 @@
           The project will contain all the data and artifacts for the AI model.
         </template>
         <template #button>
-          Create project
+          Create Project
         </template>
       </Empty>
     </div>

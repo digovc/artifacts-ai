@@ -7,7 +7,7 @@
         {{ reference.name }}
       </Chip>
     </div>
-    <div v-else class="text-center pt-8 flex justify-center items-center space-x-4">
+    <div v-else class="text-center pt-8 flex justify-center items-center space-x-4 mt-0.5">
       <Button :icon="faFileLines" @click="$emit('onSelectReference')">
         Add references
       </Button>

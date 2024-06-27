@@ -33,7 +33,7 @@
             Artifacts are files that the AI model will use as output for your project.
           </template>
           <template #button>
-            Create a artifact
+            Create artifact
           </template>
         </Empty>
         <Empty v-if="artifacts.length && !selectedArtifact.id" :icon="faFilePen">

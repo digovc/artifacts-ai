@@ -12,6 +12,15 @@ class GlobalCommands {
     database.insert("projects", newProject);
     router.push(`/projects/${ newProject.id }`);
   }
+
+  init() {
+    document.addEventListener('keydown', (event) => {
+      if (event.ctrlKey && event.key === 'n') {
+        event.preventDefault();
+        this.createProject();
+      }
+    });
+  }
 }
 
-export default new GlobalCommands()
+export default new GlobalCommands();

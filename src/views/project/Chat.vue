@@ -1,10 +1,10 @@
 <template>
   <div class="h-full flex flex-col p-4 py-2">
     <div class="pb-4 group flex space-x-4 items-center">
-      <Title @click="showInputModal = true" class="cursor-pointer">
+      <Title @click="openInputModal" class="cursor-pointer">
         {{ project.name }}
       </Title>
-      <FontAwesomeIcon :icon="faPen" @click="showInputModal = true" class="invisible group-hover:visible"/>
+      <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible"/>
     </div>
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
@@ -29,7 +29,7 @@
                   @onSelectReference="selectReferences" @onFilesDrop="handleFilesDrop"/>
     </div>
     <div>
-      <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage"/>
+      <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage" :project="project"/>
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
@@ -38,7 +38,7 @@
       Edit project name
     </template>
     <div>
-      <input name="project-name" v-model="project.name" placeholder="Project name" autofocus
+      <input ref="projectNameInput" name="project-name" v-model="project.name" placeholder="Project name" autofocus
              class="border w-80 indent-1" @keyup.enter="saveProjectName"/>
     </div>
     <template #commands>
@@ -61,15 +61,16 @@ import database from "@/services/database.js";
 import messageSender from "@/services/message-sender.js";
 import streamProvider from "@/services/stream-provider.js";
 import { filter, Subject, takeUntil } from "rxjs";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faMessage, faPen } from "@fortawesome/free-solid-svg-icons";
 
 const messages = ref([]);
-const references = ref([]);
-const referenceInput = ref(null);
-const onDestroy$ = new Subject();
 const messagesContainer = ref(null);
+const onDestroy$ = new Subject();
+const projectNameInput = ref(null);
+const referenceInput = ref(null);
+const references = ref([]);
 const showInputModal = ref(false);
 
 const props = defineProps({
@@ -167,6 +168,12 @@ const saveProjectName = () => {
   const update = x => x.name = props.project.name;
   database.updateFields(props.project, update);
   showInputModal.value = false;
+};
+
+const openInputModal = async () => {
+  showInputModal.value = true;
+  await nextTick();
+  projectNameInput.value.select();
 };
 
 onMounted(() => {

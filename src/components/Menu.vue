@@ -4,13 +4,13 @@
       <img src="/public/logo-color-180.png" class="w-14 h-14" alt="Artifacts AI"/>
     </div>
     <div class="space-y-2 grow">
-      <IconButton :icon="faHome" @click="openHome"/>
-      <IconButton :icon="faPlus" @click="createProject"/>
-      <IconButton :icon="faGear" @click="openConfiguration"/>
+      <IconButton :icon="faHome" @click="openHome" title="Home"/>
+      <IconButton :icon="faPlus" @click="createProject" title="Create Project"/>
+      <IconButton :icon="faGear" @click="openConfiguration" title="Settings"/>
     </div>
     <div class="space-y-2">
-      <IconButton :icon="faQuestionCircle" @click="openHelp"/>
-      <IconButton :icon="faGithub" @click="openGithub"/>
+      <IconButton :icon="faQuestionCircle" @click="openHelp" title="Help"/>
+      <IconButton :icon="faGithub" @click="openGithub" title="Github"/>
     </div>
   </div>
 </template>
