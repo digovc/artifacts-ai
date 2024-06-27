@@ -6,7 +6,8 @@
           <FontAwesomeIcon :icon="faRobot" class="text-2xl text-gray-500 -mt-1"/>
         </div>
       </div>
-      <div class="grow bg-gray-100 p-2 rounded-lg text-sm" :class="message.from === 'assistant' ? 'mr-16' : 'ml-16'">
+      <div class="grow bg-gray-100 p-2 rounded-lg text-sm overflow-auto break-words"
+           :class="message.from === 'assistant' ? 'mr-16' : 'ml-16'">
         <Markdown :src="message.content"/>
         <div class="flex space-x-1 text-xs justify-end text-gray-400">
           <div v-if="message.provider">
@@ -40,10 +41,10 @@
 import MiniButton from "@/components/MiniButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faCopy, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
-import Markdown from "@/components/Markdown.vue";
 import clipboard from "@/services/clipboard.js";
 import database from "@/services/database.js";
 import { ref } from "vue";
+import Markdown from "@/components/Markdown.vue";
 
 const isDeleted = ref(false)
 
@@ -61,3 +62,9 @@ const deleteMessage = () => {
   isDeleted.value = true
 }
 </script>
+<style scoped>
+.break-words {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+</style>
