@@ -34,6 +34,17 @@ class MessageSender {
 
     messages.push({ role: "user", content: message });
 
+    const messagesAlternated = [messages[0]]
+
+    for (let i = 1; i < messages.length; i++) {
+      const lastMessage = messagesAlternated[messagesAlternated.length - 1];
+      if (lastMessage.role === messages[i].role) {
+        lastMessage.content += '\n' + messages[i].content;
+      } else {
+        messagesAlternated.push(messages[i]);
+      }
+    }
+
     let content = ''
 
     const onData = (part) => {
@@ -42,7 +53,7 @@ class MessageSender {
     };
 
     streamProvider.onStart$.next(0)
-    await llmProvider.sendMessage(messages, onData);
+    await llmProvider.sendMessage(messagesAlternated, onData);
     streamProvider.onEnd$.next(0)
 
     const response = content;

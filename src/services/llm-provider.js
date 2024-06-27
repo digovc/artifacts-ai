@@ -12,7 +12,7 @@ class LLMProvider {
       throw new Error(`Provider ${ selectedProviderName } is not configured.`);
     }
 
-    const url = provider.url;
+    const url = providerOnConfig.proxyUrl || provider.url;
     const apiKey = providerOnConfig.apiKey;
     const model = providerOnConfig.model;
 
@@ -23,9 +23,10 @@ class LLMProvider {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        max_tokens: 4096,
+        messages: messages,
         model: model,
         stream: true,
-        messages: messages,
       }),
     });
 
@@ -50,13 +51,14 @@ class LLMProvider {
         if (line.startsWith("data: ")) {
           const data = line.substring(6);
           if (data === "[DONE]") return;
+          if (data === '{"type":"message_stop"}') return;
 
-          try {
-            const parsed = JSON.parse(data);
-            const content = parsed.choices[0].delta?.content || "";
-            onData(content);
-          } catch (error) {
-            console.error("Error parsing JSON:", error);
+          const parsed = JSON.parse(data);
+
+          if (parsed.choices?.length && parsed.choices[0].delta?.content) {
+            onData(parsed.choices[0].delta?.content);
+          } else if (parsed.delta?.text) {
+            onData(parsed.delta?.text);
           }
         }
       }

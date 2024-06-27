@@ -14,6 +14,7 @@
                  type="select"/>
           <Field v-model="provider.model" :options="getModelsForProvider(provider.name)" label="Model" type="select"/>
           <Field v-model="provider.apiKey" label="API Key" type="password"/>
+          <Field v-model="provider.proxyUrl" label="Proxy URL" type="text"/>
           <Button class="mt-2" @click="() => removeProvider(index)">Remove</Button>
         </Subgroup>
       </div>
@@ -62,7 +63,7 @@ const saveSettings = () => {
 };
 
 const addProvider = () => {
-  settings.value.providers.push({ name: '', model: '', apiKey: '' });
+  settings.value.providers.push({ name: '', model: '', apiKey: '', proxyUrl: '' });
 };
 
 const removeProvider = (index) => {
