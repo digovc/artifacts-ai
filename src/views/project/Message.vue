@@ -29,9 +29,9 @@
         {{ message.createdAt }}
       </div>
       <div class="flex space-x-2 justify-end">
+        <MiniButton :icon="faEdit" @click="$emit('onEdit')" v-if="message.from === 'user'"/>
+        <MiniButton :icon="faRefresh" @click="$emit('onRefresh')"/>
         <MiniButton :icon="faCopy" @click="copy"/>
-        <!--        <MiniButton :icon="faEdit"/>-->
-        <!--        <MiniButton :icon="faRefresh" @click="$emit('onRefresh')"/>-->
         <MiniButton :icon="faTrash" @click="deleteMessage"/>
       </div>
     </div>
@@ -40,7 +40,7 @@
 <script setup>
 import MiniButton from "@/components/MiniButton.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faCopy, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faEdit, faRefresh, faRobot, faTrash, faUser } from "@fortawesome/free-solid-svg-icons";
 import clipboard from "@/services/clipboard.js";
 import database from "@/services/database.js";
 import { ref } from "vue";

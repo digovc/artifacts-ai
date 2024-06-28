@@ -41,11 +41,17 @@ const selectedProvider = ref("");
 const showMenuContext = ref(false);
 
 const props = defineProps({
-  project: Object
+  project: Object,
+  text: String,
 });
 
 watch(() => props.project.id, () => {
   messageInput.value.focus();
+});
+
+watch(() => props.text, () => {
+  inputMessage.value = props.text;
+  setTimeout(() => messageInput.value.focus(), 0);
 });
 
 const sendMessage = async (event) => {

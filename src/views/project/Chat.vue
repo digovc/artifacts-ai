@@ -9,7 +9,9 @@
     <div class="grow relative">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
         <div class="flex flex-col space-y-4" v-if="messages.length">
-          <Message v-for="message in messages" :key="message.id" :message="message" @onRefresh=""/>
+          <Message v-for="message in messages" :key="message.id" :message="message"
+                   @onRefresh="editOrRefreshMessage(message, false)"
+                   @onEdit="editOrRefreshMessage(message, true)"></Message>
           <TempMessage/>
         </div>
         <Empty v-else :icon="faMessage">
@@ -29,7 +31,8 @@
                   @onSelectReference="selectReferences" @onFilesDrop="handleFilesDrop"/>
     </div>
     <div>
-      <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage" :project="project"/>
+      <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage" :project="project"
+                  :text="newMessage"/>
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
@@ -72,6 +75,7 @@ const projectNameInput = ref(null);
 const referenceInput = ref(null);
 const references = ref([]);
 const showInputModal = ref(false);
+const newMessage = ref("");
 
 const props = defineProps({
   project: Object,
@@ -174,6 +178,29 @@ const openInputModal = async () => {
   showInputModal.value = true;
   await nextTick();
   projectNameInput.value.select();
+};
+
+const editOrRefreshMessage = (message, edit) => {
+  const messagesInversed = messages.value.slice().reverse();
+
+  for (const message1 of messagesInversed) {
+    database.delete("messages", message1.id);
+    message1.isDeleted = true;
+    if (message1.id === message.id) break;
+  }
+
+  messages.value = messages.value.filter(x => !x.isDeleted);
+
+  if (edit) {
+    newMessage.value = message.content;
+    return;
+  }
+
+  if (message.from === "user") {
+    sendMessage(message.content);
+  } else {
+    messageSender.send(message.content, props.project.id);
+  }
 };
 
 onMounted(() => {
