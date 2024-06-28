@@ -71,4 +71,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Support
 
-For help, contact via email: rodrigo.conspena@gmail.com
+For help, contact via issues.
