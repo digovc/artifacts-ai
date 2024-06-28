@@ -33,6 +33,7 @@ const props = defineProps({
 })
 
 watch(() => props.content, () => {
+  if (localContent.value === props.content) return
   localContent.value = props.content
   isChangePending.value = false
 })

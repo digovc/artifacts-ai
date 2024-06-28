@@ -178,6 +178,7 @@ const updateArtifactContent = (content) => {
   if (!selectedArtifact.value.id) return;
   selectedArtifact.value.versions = selectedArtifact.value.versions || [];
   selectedArtifact.value.versions.push(content);
+  selectedArtifact.value.content = content;
   const versions = selectedArtifact.value.versions;
   const update = { content, versions };
   database.updateFields(selectedArtifact.value.id, update, false);
