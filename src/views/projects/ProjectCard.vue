@@ -1,6 +1,6 @@
 <template>
   <Card @click="openProject" class="group select-none" v-if="!isDeleted">
-    <div class="text-lg uppercase">
+    <div class="text-lg">
       {{ project.name }}
     </div>
     <div class="italic text-sm grow">

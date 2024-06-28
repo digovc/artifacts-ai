@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col p-4 py-2">
     <div class="pb-4 group flex space-x-4 items-center">
-      <Title @click="openInputModal" class="cursor-pointer uppercase">
+      <Title @click="openInputModal" class="cursor-pointer">
         {{ project.name }}
       </Title>
       <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible"/>
