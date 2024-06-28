@@ -1,10 +1,12 @@
 <template>
-  <div class="flex flex-col space-y-2">
+  <div class="flex flex-col space-y-2 h-full">
     <div class="flex space-x-2 justify-end">
       <MiniButton :icon="faFileLines" @click="$emit('onAddReferenceClick')" title="Add reference"/>
       <MiniButton :icon="faRobot" @click="openMenuContext" title="Select provider"/>
     </div>
-    <div class="grow relative">
+    <div class="grow relative group">
+      <MiniButton :icon="faExpand" class="absolute right-2 top-2 invisible group-hover:visible"
+                  title="Selected provider" @click="$emit('onFullSize')"/>
       <textarea ref="messageInput" class="w-full h-full outline-none border rounded p-2 resize-none" rows="5" autofocus
                 placeholder="Type your message here" v-model="inputMessage" @keydown.enter="sendMessage"/>
       <div class="absolute right-2 bottom-4">
@@ -23,16 +25,16 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue';
 import Context from "@/components/Context.vue";
 import IconButton from "@/components/IconButton.vue";
 import MiniButton from "@/components/MiniButton.vue";
-import { SETTINGS_KEY } from "@/services/settings.js";
 import database from "@/services/database.js";
-import { faArrowRight, faFileLines, faRobot } from "@fortawesome/free-solid-svg-icons";
+import { SETTINGS_KEY } from "@/services/settings.js";
+import { faArrowRight, faExpand, faFileLines, faRobot } from "@fortawesome/free-solid-svg-icons";
+import { onMounted, ref, watch } from 'vue';
 
 const configuredProviders = ref([]);
-const emits = defineEmits(["onAddReferenceClick", "onSendMessage"]);
+const emits = defineEmits(["onAddReferenceClick", "onSendMessage", "onFullSize"]);
 const inputMessage = ref("");
 const menuContextX = ref(0);
 const menuContextY = ref(0);
@@ -63,7 +65,6 @@ const sendMessage = async (event) => {
   inputMessage.value = "";
   emits("onSendMessage", message);
   event.preventDefault();
-
   return false;
 };
 

@@ -6,7 +6,7 @@
       </Title>
       <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible"/>
     </div>
-    <div class="grow relative">
+    <div class="relative" :class="{ 'invisible': isFullSize, 'grow': !isFullSize }">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">
         <div class="flex flex-col space-y-4" v-if="messages.length">
           <Message v-for="message in messages" :key="message.id" :message="message"
@@ -26,13 +26,13 @@
         </Empty>
       </div>
     </div>
-    <div>
+    <div :class="{ 'invisible': isFullSize }">
       <References :references="references" @onOpenReference="openReference" @onDeleteReference="deleteReference"
                   @onSelectReference="selectReferences" @onFilesDrop="handleFilesDrop"/>
     </div>
-    <div>
+    <div :class="{ 'grow': isFullSize }">
       <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage" :project="project"
-                  :text="newMessage"/>
+                  :text="newMessage" @onFullSize="isFullSize = !isFullSize"/>
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
@@ -68,14 +68,15 @@ import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { faMessage, faPen } from "@fortawesome/free-solid-svg-icons";
 
+const isFullSize = ref(false);
 const messages = ref([]);
 const messagesContainer = ref(null);
+const newMessage = ref("");
 const onDestroy$ = new Subject();
 const projectNameInput = ref(null);
 const referenceInput = ref(null);
 const references = ref([]);
 const showInputModal = ref(false);
-const newMessage = ref("");
 
 const props = defineProps({
   project: Object,
@@ -155,6 +156,7 @@ const openReference = reference => {
 
 const sendMessage = async message => {
   const projectId = props.project.id;
+  isFullSize.value = false;
 
   const newMessage = {
     content: message,
@@ -163,6 +165,7 @@ const sendMessage = async message => {
   };
 
   database.insert("messages", newMessage);
+
   await messageSender.send(message, projectId).catch(() => {
     streamProvider.onEnd$.next(0);
   });
