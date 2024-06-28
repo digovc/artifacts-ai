@@ -1,5 +1,5 @@
 <template>
-  <Card @click="openProject" class="group" v-if="!isDeleted">
+  <Card @click="openProject" class="group select-none" v-if="!isDeleted">
     <div class="text-lg uppercase">
       {{ project.name }}
     </div>

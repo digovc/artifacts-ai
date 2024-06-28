@@ -2,9 +2,9 @@ class Clipboard {
   async copy(text) {
     try {
       await navigator.clipboard.writeText(text);
-      console.log('Texto copiado com sucesso!');
+      console.log('Text copied to clipboard: ', text);
     } catch (err) {
-      console.error('Falha ao copiar o texto: ', err);
+      console.error('Failed to copy text: ', err);
     }
   }
 }

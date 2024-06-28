@@ -13,10 +13,8 @@ class FileSaver {
 
       document.body.removeChild(link);
       URL.revokeObjectURL(link.href);
-
-      console.log('Arquivo salvo com sucesso!');
     } catch (err) {
-      console.error('Falha ao salvar o arquivo: ', err);
+      console.error('Failed to save file: ', err);
     }
   }
 }

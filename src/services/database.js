@@ -44,7 +44,6 @@ class Database {
   }
 
   updateFields(id, update, emitOnUpdate = true) {
-    console.log('updateFields', id, update);
     const document = JSON.parse(localStorage.getItem(id));
     Object.assign(document, update);
     document.updatedAt = new Date().toISOString();

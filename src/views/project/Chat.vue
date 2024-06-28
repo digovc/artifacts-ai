@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col p-4 py-2">
     <div class="pb-4 group flex space-x-4 items-center">
-      <Title @click="openInputModal" class="cursor-pointer">
+      <Title @click="openInputModal" class="cursor-pointer uppercase">
         {{ project.name }}
       </Title>
       <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible"/>
@@ -169,8 +169,8 @@ const sendMessage = async message => {
 };
 
 const saveProjectName = () => {
-  const update = x => x.name = props.project.name;
-  database.updateFields(props.project, update);
+  const update = { name: props.project.name }
+  database.updateFields(props.project.id, update);
   showInputModal.value = false;
 };
 

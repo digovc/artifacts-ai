@@ -169,7 +169,10 @@ const openArtifactTitleModal = async () => {
 
 const saveArtifactName = () => {
   if (!selectedArtifact.value.id) return;
-  const update = { name: inputModalTitle.value };
+  const newName = inputModalTitle.value;
+  if (!newName) return;
+  selectedArtifact.value.name = newName;
+  const update = { name: newName };
   database.updateFields(selectedArtifact.value.id, update);
   showInputModal.value = false;
 }
@@ -193,7 +196,6 @@ const changeVersion = index => {
 
 const selectArtifact = (artifact) => {
   artifact = artifact || {};
-  if (artifact.id === selectedArtifact.value.id) return;
   selectedArtifact.value = artifact;
 }
 

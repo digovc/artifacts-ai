@@ -12,16 +12,17 @@
     </IconButton>
     <div class="grow" v-if="content !== ''">
       <vue-monaco-editor :language="getLanguage()" theme="vs" :options="editorOptions" :value="content"
-                         @change="changeValue"/>
+                         @change="changeValue" @keyup="onEditorKeyUp"/>
     </div>
   </div>
 </template>
 <script setup>
-import { editorLanguages } from "@/constants/editor-languages.js";
+import IconButton from "@/components/IconButton.vue";
+import globalCommands from "@/services/global-commands.js";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { editorLanguages } from "@/constants/editor-languages.js";
 import { faPen, faSave } from "@fortawesome/free-solid-svg-icons";
 import { ref, watch } from "vue";
-import IconButton from "@/components/IconButton.vue";
 
 const emits = defineEmits(['onOpenTitleModal', 'onContentChange'])
 const isChangePending = ref(false)
@@ -67,5 +68,11 @@ const saveChangedContent = () => {
   if (!isChangePending.value) return
   isChangePending.value = false
   emits('onContentChange', localContent.value)
+}
+
+const onEditorKeyUp = (event) => {
+  if (event.code === 'KeyN' && event.ctrlKey) {
+    globalCommands.createProject()
+  }
 }
 </script>
