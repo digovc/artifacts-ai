@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full border rounded overflow-hidden flex flex-col">
+  <div class="h-full border rounded overflow-hidden flex flex-col relative">
     <div class="text-sm font-thin p-1 px-2 border-b flex space-x-2 group items-center cursor-pointer"
          @click="$emit('onOpenTitleModal')">
       <div>
@@ -7,17 +7,21 @@
       </div>
       <FontAwesomeIcon :icon="faPen" class="text-xs text-gray-400 invisible group-hover:visible"/>
     </div>
+    <IconButton @click="saveChangedContent" class="absolute top-4 right-4 rounded z-10 animate-pulse"
+                v-if="isChangePending" :icon="faSave">
+    </IconButton>
     <div class="grow" v-if="content !== ''">
       <vue-monaco-editor :language="getLanguage()" theme="vs" :options="editorOptions" :value="content"
-                         @change="changeValue" @focusout="saveChangedContent"/>
+                         @change="changeValue"/>
     </div>
   </div>
 </template>
 <script setup>
 import { editorLanguages } from "@/constants/editor-languages.js";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
+import { faPen, faSave } from "@fortawesome/free-solid-svg-icons";
 import { ref, watch } from "vue";
+import IconButton from "@/components/IconButton.vue";
 
 const emits = defineEmits(['onOpenTitleModal', 'onContentChange'])
 const isChangePending = ref(false)
@@ -30,6 +34,11 @@ const props = defineProps({
 
 watch(() => props.content, () => {
   localContent.value = props.content
+  isChangePending.value = false
+})
+
+watch(() => props.fileName, () => {
+  isChangePending.value = false
 })
 
 const editorOptions = {

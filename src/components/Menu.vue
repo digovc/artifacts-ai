@@ -1,7 +1,7 @@
 <template>
   <div class="h-full flex flex-col p-4 border-r bg-black text-white items-center space-y-4">
     <div>
-      <img src="/public/logo-color-180.png" class="w-14 h-14" alt="Artifacts AI"/>
+      <img src="/src/assets/logo-color-180.png" class="w-14 h-14" alt="Artifacts AI"/>
     </div>
     <div class="space-y-2 grow">
       <IconButton :icon="faHome" @click="openHome" title="Home"/>

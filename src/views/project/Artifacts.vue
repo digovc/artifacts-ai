@@ -12,7 +12,7 @@
       </div>
       <div class="flex space-x-2 overflow-x-auto">
         <div v-for="artifact in artifacts" :key="artifact.id">
-          <Chip :artifact="artifact" @onClick="selectedArtifact = artifact"
+          <Chip :artifact="artifact" @onClick="selectArtifact(artifact)"
                 :isSelected="selectedArtifact.id === artifact.id" @onDeleteClick="deleteArtifact(artifact)">
             {{ artifact.name }}
           </Chip>
@@ -117,25 +117,25 @@ const loadArtifacts = () => {
   artifacts.value = database.getByFilter("artifacts", filter);
 
   if (artifacts.value.length) {
-    selectedArtifact.value = artifacts.value[0];
+    selectArtifact(artifacts.value[0])
   } else {
-    selectedArtifact.value = {};
+    selectArtifact({})
   }
 }
 
-const createArtifact = () => {
+const createArtifact = async () => {
   const projectId = props.project.id;
-
   const name = `artifact-${ new Date().getTime() }.txt`;
+  const content = `# Artifact ${ new Date().getTime() }\n\n`;
 
   const newArtifact = {
     projectId,
     name: name,
-    content: "// hello, world!",
+    content: content,
   };
 
   database.insert("artifacts", newArtifact);
-  selectedArtifact.value = newArtifact;
+  selectArtifact(newArtifact);
 }
 
 const deleteArtifact = (artifact) => {
@@ -145,7 +145,7 @@ const deleteArtifact = (artifact) => {
   artifacts.value = artifacts.value.filter(x => x.id !== artifact.id);
 
   if (selectedArtifact.value.id === artifact.id) {
-    selectedArtifact.value = {};
+    selectArtifact({});
   }
 }
 
@@ -176,6 +176,7 @@ const saveArtifactName = () => {
 
 const updateArtifactContent = (content) => {
   if (!selectedArtifact.value.id) return;
+  selectedArtifact.value.versions = selectedArtifact.value.versions || [];
   selectedArtifact.value.versions.push(content);
   const versions = selectedArtifact.value.versions;
   const update = { content, versions };
@@ -189,6 +190,11 @@ const changeVersion = index => {
   database.updateFields(selectedArtifact.value.id, update, false);
 };
 
+const selectArtifact = (artifact) => {
+  artifact = artifact || {};
+  if (artifact.id === selectedArtifact.value.id) return;
+  selectedArtifact.value = artifact;
+}
 
 onMounted(() => {
   database.onDocumentInserted$
@@ -196,7 +202,7 @@ onMounted(() => {
       .pipe(filter(x => x.table === "artifacts" && x.document.projectId === props.project.id))
       .subscribe(x => {
         artifacts.value.push(x.document)
-        selectedArtifact.value = x.document;
+        selectArtifact(x.document)
       });
 
   database.onDocumentUpdated$
@@ -205,7 +211,7 @@ onMounted(() => {
       .subscribe(x => {
         artifacts.value = artifacts.value.filter(y => y.id !== x.id);
         artifacts.value.push(x)
-        selectedArtifact.value = x
+        selectArtifact(x)
       });
 });
 

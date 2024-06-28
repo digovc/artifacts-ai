@@ -1,5 +1,5 @@
 <template>
-  <div class="hover:bg-gray-500 w-10 h-10 rounded flex justify-center items-center cursor-pointer">
+  <div class="hover:bg-gray-700 hover:text-white w-10 h-10 rounded flex justify-center items-center cursor-pointer">
     <div>
       <FontAwesomeIcon :icon="icon" class="text-2xl"/>
     </div>
