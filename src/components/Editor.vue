@@ -45,9 +45,10 @@ watch(() => props.fileName, () => {
 
 const editorOptions = {
   automaticLayout: true,
-  formatOnType: true,
   formatOnPaste: true,
+  formatOnType: true,
   readOnly: false,
+  wordWrap: "on",
 }
 
 const changeValue = (value) => {
