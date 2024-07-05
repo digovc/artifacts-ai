@@ -8,7 +8,7 @@
       <div class="space-x-2">
         <IconButton :icon="faPlus" @click="createArtifact" title="Create artifact"/>
       </div>
-      <div class="flex space-x-2 overflow-x-auto">
+      <div class="flex space-x-2 overflow-x-auto pb-4">
         <div v-for="artifact in artifacts" :key="artifact.id">
           <Chip :artifact="artifact" @onClick="selectArtifact(artifact)"
                 :isSelected="selectedArtifact.id === artifact.id" @onDeleteClick="deleteArtifact(artifact)">
@@ -107,7 +107,7 @@ watch(() => props.project.id, () => {
 const loadArtifacts = () => {
   const projectId = props.project.id;
   const filter = x => x.projectId === projectId;
-  artifacts.value = database.getByFilter("artifacts", filter);
+  artifacts.value = database.getByFilter("artifacts", filter).sort((a, b) => a.name.localeCompare(b.name));
 
   if (artifacts.value.length) {
     selectArtifact(artifacts.value[0])
@@ -128,6 +128,8 @@ const createArtifact = async () => {
   };
 
   database.insert("artifacts", newArtifact);
+  artifacts.value.push(newArtifact);
+  artifacts.value.sort((a, b) => a.name.localeCompare(b.name));
   selectArtifact(newArtifact);
 }
 
@@ -167,6 +169,7 @@ const saveArtifactName = () => {
   selectedArtifact.value.name = newName;
   const update = { name: newName };
   database.updateFields(selectedArtifact.value.id, update);
+  artifacts.value.sort((a, b) => a.name.localeCompare(b.name));
   showInputModal.value = false;
 }
 
@@ -191,7 +194,7 @@ const selectArtifact = (artifact) => {
   artifact = artifact || {};
   selectedArtifact.value = artifact;
   nextTick(() => {
-    const artifactTab = document.querySelector(`[key='${ artifact.id }']`);
+    const artifactTab = document.querySelector(`[key='${artifact.id}']`);
     if (artifactTab) {
       artifactTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
@@ -204,6 +207,7 @@ onMounted(() => {
       .pipe(filter(x => x.table === "artifacts" && x.document.projectId === props.project.id))
       .subscribe(x => {
         artifacts.value.push(x.document)
+        artifacts.value.sort((a, b) => a.name.localeCompare(b.name));
         selectArtifact(x.document)
       });
 
@@ -213,6 +217,7 @@ onMounted(() => {
       .subscribe(x => {
         artifacts.value = artifacts.value.filter(y => y.id !== x.id);
         artifacts.value.push(x)
+        artifacts.value.sort((a, b) => a.name.localeCompare(b.name));
         selectArtifact(x)
       });
 });
