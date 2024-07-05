@@ -1,11 +1,11 @@
 <template>
   <div class="h-full border rounded overflow-hidden flex flex-col relative">
-    <div class="text-sm font-thin p-1 px-2 border-b flex space-x-2 group items-center cursor-pointer"
-         @click="$emit('onOpenTitleModal')">
-      <div>
+    <div class="text-sm font-thin p-1 px-2 border-b flex space-x-2 group items-center cursor-pointer">
+      <div @click="$emit('onOpenTitleModal')">
         {{ fileName }}
       </div>
-      <FontAwesomeIcon :icon="faPen" class="text-xs text-gray-400 invisible group-hover:visible"/>
+      <MicroButton :icon="faPen" @click="$emit('onOpenTitleModal')"/>
+      <MicroButton :icon="faCopy" @click="copyFileName"/>
     </div>
     <IconButton @click="saveChangedContent" class="absolute top-4 right-4 rounded z-10 animate-pulse"
                 v-if="isChangePending" :icon="faSave">
@@ -19,10 +19,11 @@
 <script setup>
 import IconButton from "@/components/IconButton.vue";
 import globalCommands from "@/services/global-commands.js";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { editorLanguages } from "@/constants/editor-languages.js";
-import { faPen, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faPen, faSave } from "@fortawesome/free-solid-svg-icons";
 import { ref, watch } from "vue";
+import clipboard from "@/services/clipboard.js";
+import MicroButton from "@/components/MicroButton.vue";
 
 const emits = defineEmits(['onOpenTitleModal', 'onContentChange'])
 const isChangePending = ref(false)
@@ -49,6 +50,9 @@ const editorOptions = {
   formatOnType: true,
   readOnly: false,
   wordWrap: "on",
+  minimap: {
+    enabled: false
+  }
 }
 
 const changeValue = (value) => {
@@ -75,5 +79,9 @@ const onEditorKeyUp = (event) => {
   if (event.code === 'KeyN' && event.ctrlKey) {
     globalCommands.createProject()
   }
+}
+
+const copyFileName = () => {
+  clipboard.copy(props.fileName)
 }
 </script>

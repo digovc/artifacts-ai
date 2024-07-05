@@ -6,9 +6,7 @@
     </div>
     <div class="flex space-x-2 pb-4">
       <div class="space-x-2">
-        <Button :icon="faPlus" @click="createArtifact">
-          Create
-        </Button>
+        <IconButton :icon="faPlus" @click="createArtifact" title="Create artifact"/>
       </div>
       <div class="flex space-x-2 overflow-x-auto">
         <div v-for="artifact in artifacts" :key="artifact.id">
@@ -95,6 +93,7 @@ import fileSaver from "@/services/file-saver.js";
 import clipboard from "@/services/clipboard.js";
 import Modal from "@/components/Modal.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import IconButton from "@/components/IconButton.vue";
 
 const artifacts = ref([]);
 const selectedArtifact = ref({});

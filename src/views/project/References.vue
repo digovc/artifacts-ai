@@ -8,9 +8,7 @@
       </Chip>
     </div>
     <div v-else class="text-center pt-8 flex justify-center items-center space-x-4 mt-0.5">
-      <Button :icon="faFileLines" @click="$emit('onSelectReference')">
-        Add references
-      </Button>
+      <IconButton :icon="faFileLines" @click="$emit('onSelectReference')" title="Add references"/>
       <div class="text-xs font-thin">
         Drag and drop references here
       </div>
@@ -19,8 +17,8 @@
 </template>
 <script setup>
 import { faFileLines } from "@fortawesome/free-solid-svg-icons";
-import Button from "@/components/Button.vue";
 import Chip from "@/components/Chip.vue";
+import IconButton from "@/components/IconButton.vue";
 
 defineProps({
   references: Array
