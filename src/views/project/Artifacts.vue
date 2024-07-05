@@ -190,6 +190,12 @@ const changeVersion = index => {
 const selectArtifact = (artifact) => {
   artifact = artifact || {};
   selectedArtifact.value = artifact;
+  nextTick(() => {
+    const artifactTab = document.querySelector(`[key='${ artifact.id }']`);
+    if (artifactTab) {
+      artifactTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  });
 }
 
 onMounted(() => {
