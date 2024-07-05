@@ -18,7 +18,7 @@
     <div class="flex flex-col">
       <div v-for="provider in configuredProviders" :key="provider.name" @click="selectProvider(provider.name)"
            class="cursor-pointer hover:bg-gray-200 p-2">
-        {{ provider.name }}
+        <span :class="{ 'font-bold': provider.name === selectedProvider }">{{ provider.name }}</span>
       </div>
     </div>
   </Context>
@@ -93,6 +93,7 @@ const saveSelectedProvider = (provider) => {
 const loadConfiguredProviders = () => {
   const settingsData = database.get(SETTINGS_KEY);
   configuredProviders.value = settingsData?.providers || [];
+  selectedProvider.value = settingsData?.providerSelected || "";
 };
 
 onMounted(() => {
