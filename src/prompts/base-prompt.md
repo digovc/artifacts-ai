@@ -41,6 +41,7 @@ The pain he truly feels.
 You can create as many artifacts as necessary to meet the user's request.
 You must follow the above format for each artifact you create or modify, without exception.
 If it is necessary to change a single line of an artifact, you must respond with the complete artifact, without exception.
+Do not omit any part of the artifact's content in your response.
 
 ## References
 

@@ -15,11 +15,13 @@ class MessageSender {
     const basePrompt = await basePromptResponse.text();
 
     messages.push({ role: "system", content: basePrompt });
-    const references = this._getReferences(projectId);
+    const references = this._getReferencesText(projectId);
 
     if (references) {
       messages.push({ role: "user", content: references });
     }
+
+    this._addReferencesImages(projectId, messages);
 
     const artifacts = this._getArtifacts(projectId);
 
@@ -35,17 +37,6 @@ class MessageSender {
 
     messages.push({ role: "user", content: message });
 
-    const messagesAlternated = [messages[0]]
-
-    for (let i = 1; i < messages.length; i++) {
-      const lastMessage = messagesAlternated[messagesAlternated.length - 1];
-      if (lastMessage.role === messages[i].role) {
-        lastMessage.content += '\n' + messages[i].content;
-      } else {
-        messagesAlternated.push(messages[i]);
-      }
-    }
-
     let content = ''
 
     const onData = (part) => {
@@ -54,7 +45,7 @@ class MessageSender {
     };
 
     streamProvider.onStart$.next(0)
-    await llmProvider.sendMessage(messagesAlternated, onData);
+    await llmProvider.sendMessage(messages, onData);
     streamProvider.onEnd$.next(0)
 
     const response = content;
@@ -65,8 +56,8 @@ class MessageSender {
     this._saveArtifacts(result.artifacts, projectId);
   }
 
-  _getReferences(projectId) {
-    const filtter = x => x.projectId === projectId;
+  _getReferencesText(projectId) {
+    const filtter = x => x.projectId === projectId && x.type === 'text';
     const references = database.getByFilter("references", filtter);
     if (!references || !references.length) return '## References\nNo references...'
     const lines = ['## References'];
@@ -82,6 +73,19 @@ class MessageSender {
     }
 
     return lines.join('\n');
+  }
+
+  _addReferencesImages(projectId, messages) {
+    const filtter = x => x.projectId === projectId && x.type === 'image'
+    const referencesImages = database.getByFilter("references", filtter);
+    if (!referencesImages || !referencesImages.length) return;
+
+    const message = { role: "user", content: [] };
+    messages.push(message);
+
+    for (const referenceImage of referencesImages) {
+      message.content.push({ type: 'image_url', image_url: { url: referenceImage.content } });
+    }
   }
 
   _getArtifacts(projectId) {

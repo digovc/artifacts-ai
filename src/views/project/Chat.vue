@@ -35,7 +35,7 @@
                   :text="newMessage" @onFullSize="isFullSize = !isFullSize"/>
     </div>
   </div>
-  <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences"/>
+  <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences" accept="*/*"/>
   <Modal v-if="showInputModal" @onClose="showInputModal = false">
     <template #title>
       Edit project name
@@ -122,15 +122,22 @@ const createReferences = async () => {
 
 const createReferenceToFile = async file => {
   const reader = new FileReader();
-  reader.readAsText(file);
+  const isImage = file.type.startsWith('image/');
+
+  if (isImage) {
+    reader.readAsDataURL(file);
+  } else {
+    reader.readAsText(file);
+  }
 
   reader.onload = () => {
     const content = reader.result;
 
     const reference = {
       name: file.name,
-      content,
+      content: content,
       projectId: props.project.id,
+      type: isImage ? "image" : "text",
     };
 
     database.insert("references", reference);
