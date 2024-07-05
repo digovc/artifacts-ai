@@ -1,10 +1,10 @@
 <template>
   <div class="h-full flex flex-col p-4 py-2">
-    <div class="pb-4 group flex space-x-4 items-center">
-      <Title @click="openInputModal" class="cursor-pointer">
+    <div class="pb-4 group flex items-center">
+      <Title @click="openInputModal" class="cursor-pointer pr-4">
         {{ project.name }}
       </Title>
-      <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible"/>
+      <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible cursor-pointer"/>
     </div>
     <div class="relative" :class="{ 'invisible': isFullSize, 'grow': !isFullSize }">
       <div class="absolute inset-0 overflow-y-auto border rounded p-4 pr-6" ref="messagesContainer">

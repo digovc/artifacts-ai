@@ -20,6 +20,7 @@ import MiniButton from "@/components/MiniButton.vue";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import database from "@/services/database.js";
 import { ref } from "vue";
+import notification from "@/services/notification.js";
 
 const router = useRouter();
 const isDeleted = ref(false);
@@ -41,6 +42,7 @@ const deleteProject = (event) => {
   database.deleteByFilter("references", itemFilter);
   isDeleted.value = true;
   event.stopPropagation();
+  notification.showNotification("Project deleted");
   return false;
 };
 </script>

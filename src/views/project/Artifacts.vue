@@ -31,7 +31,9 @@
             Artifacts are files that the AI model will use as output for your project.
           </template>
           <template #button>
-            Create artifact
+            <div @click="createArtifact">
+              Create artifact
+            </div>
           </template>
         </Empty>
         <Empty v-if="artifacts.length && !selectedArtifact.id" :icon="faFilePen">
@@ -51,8 +53,8 @@
         </Version>
       </div>
       <div class="flex justify-end space-x-2">
-        <IconButton :icon="faSave" @click="saveArtifact" title="Save artifact"/>
         <IconButton :icon="faCopy" @click="copyArtifact" title="Copy artifact"/>
+        <IconButton :icon="faSave" @click="saveArtifact" title="Save artifact"/>
         <IconButton :icon="faTrash" @click="deleteArtifact(selectedArtifact)" title="Delete artifact"/>
       </div>
     </div>
@@ -88,6 +90,7 @@ import clipboard from "@/services/clipboard.js";
 import Modal from "@/components/Modal.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import IconButton from "@/components/IconButton.vue";
+import notification from "@/services/notification.js";
 
 const artifacts = ref([]);
 const selectedArtifact = ref({});
@@ -128,7 +131,6 @@ const createArtifact = async () => {
   };
 
   database.insert("artifacts", newArtifact);
-  artifacts.value.push(newArtifact);
   artifacts.value.sort((a, b) => a.name.localeCompare(b.name));
   selectArtifact(newArtifact);
 }
@@ -142,6 +144,8 @@ const deleteArtifact = (artifact) => {
   if (selectedArtifact.value.id === artifact.id) {
     selectArtifact({});
   }
+
+  notification.showNotification("Artifact deleted");
 }
 
 const saveArtifact = () => {
@@ -181,6 +185,7 @@ const updateArtifactContent = (content) => {
   const versions = selectedArtifact.value.versions;
   const update = { content, versions };
   database.updateFields(selectedArtifact.value.id, update, false);
+  notification.showNotification("Artifact content updated");
 }
 
 const changeVersion = index => {

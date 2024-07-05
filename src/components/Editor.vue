@@ -1,15 +1,13 @@
 <template>
   <div class="h-full border rounded overflow-hidden flex flex-col relative">
-    <div class="text-sm font-thin p-1 px-2 border-b flex space-x-2 group items-center cursor-pointer">
-      <div @click="$emit('onOpenTitleModal')">
+    <div class="text-sm font-thin p-1 px-2 border-b flex space-x-4 group items-center">
+      <div class="grow">
         {{ fileName }}
       </div>
-      <MicroButton :icon="faPen" @click="$emit('onOpenTitleModal')"/>
-      <MicroButton :icon="faCopy" @click="copyFileName"/>
+      <MicroButton :icon="faSave" @click="saveChangedContent" v-if="isChangePending" title="Save changes"/>
+      <MicroButton :icon="faCopy" @click="copyFileName" title="Copy file name"/>
+      <MicroButton :icon="faPen" @click="$emit('onOpenTitleModal')" title="Edit file name"/>
     </div>
-    <IconButton @click="saveChangedContent" class="absolute top-4 right-4 rounded z-10 animate-pulse"
-                v-if="isChangePending" :icon="faSave">
-    </IconButton>
     <div class="grow" v-if="content !== ''">
       <vue-monaco-editor :language="getLanguage()" theme="vs" :options="editorOptions" :value="content"
                          @change="changeValue" @keyup="onEditorKeyUp"/>
@@ -17,7 +15,6 @@
   </div>
 </template>
 <script setup>
-import IconButton from "@/components/IconButton.vue";
 import globalCommands from "@/services/global-commands.js";
 import { editorLanguages } from "@/constants/editor-languages.js";
 import { faCopy, faPen, faSave } from "@fortawesome/free-solid-svg-icons";

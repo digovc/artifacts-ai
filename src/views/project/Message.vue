@@ -45,6 +45,7 @@ import clipboard from "@/services/clipboard.js";
 import database from "@/services/database.js";
 import { ref } from "vue";
 import Markdown from "@/components/Markdown.vue";
+import notification from "@/services/notification.js";
 
 const isDeleted = ref(false)
 
@@ -60,6 +61,7 @@ const deleteMessage = () => {
   if (!props.message.id) return
   database.delete("messages", props.message.id)
   isDeleted.value = true
+  notification.showNotification("Message deleted")
 }
 </script>
 <style scoped>
