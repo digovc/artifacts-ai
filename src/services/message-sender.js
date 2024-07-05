@@ -3,6 +3,7 @@ import streamProvider from "@/services/stream-provider.js";
 import llmProvider from "@/services/llm-provider.js";
 import settings from "@/services/settings.js";
 import { providers } from "@/constants/providers.js";
+import notification from "@/services/notification.js";
 
 class MessageSender {
   async send(message, projectId) {
@@ -145,6 +146,7 @@ class MessageSender {
       existing.versions = existing.versions || [];
       existing.versions.push(artifact.content);
       database.update(existing);
+      notification.showNotification(`Artifact ${ artifact.name } updated!`);
       return;
     }
 
@@ -158,6 +160,7 @@ class MessageSender {
     };
 
     database.insert("artifacts", newArtifact);
+    notification.showNotification(`Artifact ${ artifact.name } created!`);
   }
 
   _extractArtifacts(response) {
