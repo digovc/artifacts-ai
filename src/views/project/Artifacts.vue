@@ -51,15 +51,9 @@
         </Version>
       </div>
       <div class="flex justify-end space-x-2">
-        <Button :icon="faSave" @click="saveArtifact">
-          Save
-        </Button>
-        <Button :icon="faCopy" @click="copyArtifact">
-          Copy
-        </Button>
-        <Button :icon="faTrash" @click="deleteArtifact(selectedArtifact)">
-          Delete
-        </Button>
+        <IconButton :icon="faSave" @click="saveArtifact" title="Save artifact"/>
+        <IconButton :icon="faCopy" @click="copyArtifact" title="Copy artifact"/>
+        <IconButton :icon="faTrash" @click="deleteArtifact(selectedArtifact)" title="Delete artifact"/>
       </div>
     </div>
   </div>

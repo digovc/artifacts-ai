@@ -9,7 +9,7 @@
                   title="Selected provider" @click="$emit('onFullSize')"/>
       <textarea ref="messageInput" class="w-full h-full outline-none border rounded p-2 resize-none" rows="5" autofocus
                 placeholder="Type your message here" v-model="inputMessage" @keydown.enter="sendMessage"/>
-      <div class="absolute right-2 bottom-4">
+      <div class="absolute right-2 bottom-2">
         <IconButton :icon="faArrowRight" @click="sendMessage"/>
       </div>
     </div>

@@ -6,7 +6,8 @@
                      leave-from-class="opacity-100 translate-y-0" leave-to-class="opacity-0 translate-y-8"
                      class="space-y-2">
       <div v-for="notification in notifications" :key="notification.id"
-           class="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg max-w-sm">
+           class="bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg max-w-sm cursor-pointer"
+           @click="closeNotification(notification.id)">
         {{ notification.text }}
       </div>
     </TransitionGroup>
@@ -22,8 +23,12 @@ const notifications = ref([]);
 const addNotification = (notification) => {
   notifications.value.push(notification);
   setTimeout(() => {
-    notifications.value = notifications.value.filter(n => n.id !== notification.id);
-  }, 5000); // Remove notification after 5 seconds
+    closeNotification(notification.id);
+  }, 5000);
+};
+
+const closeNotification = (id) => {
+  notifications.value = notifications.value.filter(n => n.id !== id);
 };
 
 onMounted(() => {
