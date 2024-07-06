@@ -8,7 +8,8 @@
       <MiniButton :icon="faExpand" class="absolute right-2 top-2 invisible group-hover:visible"
                   title="Selected provider" @click="$emit('onFullSize')"/>
       <textarea ref="messageInput" class="w-full h-full outline-none border rounded p-2 resize-none" rows="5" autofocus
-                placeholder="Type your message here" v-model="inputMessage" @keydown.enter="sendMessage"/>
+                placeholder="Type your message here. You can also paste images or text files."
+                v-model="inputMessage" @keydown.enter="sendMessage" @paste="handlePaste"/>
       <div class="absolute right-2 bottom-2">
         <IconButton :icon="faArrowRight" @click="sendMessage"/>
       </div>
@@ -34,7 +35,7 @@ import { faArrowRight, faExpand, faFileLines, faRobot } from "@fortawesome/free-
 import { onMounted, ref, watch } from 'vue';
 
 const configuredProviders = ref([]);
-const emits = defineEmits(["onAddReferenceClick", "onSendMessage", "onFullSize"]);
+const emits = defineEmits(["onAddReferenceClick", "onSendMessage", "onFullSize", "onFilesDrop"]);
 const inputMessage = ref("");
 const menuContextX = ref(0);
 const menuContextY = ref(0);
@@ -94,6 +95,31 @@ const loadConfiguredProviders = () => {
   const settingsData = database.get(SETTINGS_KEY);
   configuredProviders.value = settingsData?.providers || [];
   selectedProvider.value = settingsData?.providerSelected || "";
+};
+
+const handlePaste = (event) => {
+  const items = event.clipboardData.items;
+  const files = [];
+
+  for (let i = 0; i < items.length; i++) {
+    const item = items[i];
+    if (item.kind === 'file') {
+      const file = item.getAsFile();
+      files.push(file);
+    } else if (item.kind === 'string' && item.type === 'text/plain') {
+      // If it's a text file, we'll handle it as a file
+      item.getAsString((text) => {
+        const blob = new Blob([text], { type: 'text/plain' });
+        const file = new File([blob], 'pasted_text.txt', { type: 'text/plain' });
+        files.push(file);
+      });
+    }
+  }
+
+  if (files.length > 0) {
+    event.preventDefault();
+    emits("onFilesDrop", files);
+  }
 };
 
 onMounted(() => {

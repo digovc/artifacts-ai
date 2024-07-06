@@ -32,7 +32,7 @@
     </div>
     <div :class="{ 'grow': isFullSize }">
       <NewMessage @onAddReferenceClick="selectReferences" @onSendMessage="sendMessage" :project="project"
-                  :text="newMessage" @onFullSize="isFullSize = !isFullSize"/>
+                  :text="newMessage" @onFullSize="isFullSize = !isFullSize" @onFilesDrop="handleFilesDrop"/>
     </div>
   </div>
   <input ref="referenceInput" type="file" class="hidden" multiple @change="createReferences" accept="*/*"/>
