@@ -1,7 +1,7 @@
 <template>
   <div class="flex space-x-4 rounded pl-4 pr-3 py-1 cursor-pointer items-center hover:bg-gray-200 group border"
        :class="{ 'bg-gray-200': isSelected }">
-    <div v-if="icon" class="mr-2">
+    <div v-if="icon" class="-mt-px">
       <FontAwesomeIcon :icon="icon" class="text-sm"/>
     </div>
     <div class="whitespace-nowrap text-sm" @click="$emit('onClick')">
