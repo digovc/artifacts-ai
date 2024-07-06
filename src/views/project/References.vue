@@ -2,6 +2,7 @@
   <div @dragover.prevent @dragenter.prevent @drop="handleDrop">
     <div class="flex space-x-2 overflow-x-auto py-4" v-if="references.length">
       <Chip v-for="reference in references" :key="reference.id" :reference="reference"
+            :icon="getIconForReference(reference)"
             @onClick="$emit('onOpenReference', reference)"
             @onDeleteClick="$emit('onDeleteReference', reference)">
         {{ reference.name }}
@@ -16,7 +17,7 @@
   </div>
 </template>
 <script setup>
-import { faFileLines } from "@fortawesome/free-solid-svg-icons";
+import { faFileImage, faFileLines, faFileText } from "@fortawesome/free-solid-svg-icons";
 import Chip from "@/components/Chip.vue";
 import IconButton from "@/components/IconButton.vue";
 
@@ -33,6 +34,17 @@ const handleDrop = event => {
     event.stopPropagation();
     const fileArray = Array.from(files);
     emits("onFilesDrop", fileArray);
+  }
+};
+
+const getIconForReference = (reference) => {
+  const extension = reference.name.split('.').pop().toLowerCase();
+  const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'];
+
+  if (imageExtensions.includes(extension)) {
+    return faFileImage;
+  } else {
+    return faFileText;
   }
 };
 </script>
