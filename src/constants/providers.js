@@ -23,5 +23,11 @@ export const providers = [
     label: 'DeepSeek',
     url: 'https://api.deepseek.com',
     models: ['deepseek-chat', 'deepseek-coder']
+  },
+  {
+    name: 'ollama',
+    label: 'Ollama',
+    url: 'http://localhost:11434',
+    models: ['llama2', 'mistral', 'dolphin-mixtral']
   }
 ];
