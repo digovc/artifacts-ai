@@ -13,6 +13,8 @@
           <Field v-model="provider.name" :options="providerOptions.map(option => option.label)" label="Provider"
                  type="select"/>
           <Field v-model="provider.model" :options="getModelsForProvider(provider.name)" label="Model" type="select"/>
+          <Field v-if="provider.model === 'custom'" v-model="provider.customModel" label="Custom Model"
+                 type="text"/>
           <Field v-model="provider.apiKey" label="API Key" type="password"/>
           <Field v-model="provider.proxyUrl" label="Proxy URL" type="text"/>
           <Button class="mt-2" @click="() => removeProvider(index)">Remove</Button>
@@ -45,25 +47,40 @@ const loadSettings = () => {
   const settingsData = database.get(SETTINGS_KEY);
   if (!settingsData?.id) return;
   settingsData.providers = settingsData.providers || [];
+  settingsData.providers = settingsData.providers.map(provider => {
+    const selectedProvider = providerOptions.find(option => option.label === provider.name);
+    const models = selectedProvider ? [...selectedProvider.models, 'custom'] : ['custom'];
+    if (!models.includes(provider.model)) {
+      provider.customModel = provider.model;
+      provider.model = 'custom';
+    }
+    return provider;
+  });
   settings.value = settingsData;
 };
 
 const saveSettings = () => {
-  settings.value.providers.forEach(provider => {
+  const settingsToSave = JSON.parse(JSON.stringify(settings.value));
+  settingsToSave.providers = settingsToSave.providers.map(provider => {
     const selectedProvider = providerOptions.find(option => option.label === provider.name);
     provider.url = selectedProvider ? selectedProvider.url : '';
+    if (provider.model === 'custom') {
+      provider.model = provider.customModel;
+    }
+    return provider;
   });
 
-  if (settings.value.providers.length && !settings.value.providerSelected) {
-    settings.value.providerSelected = settings.value.providers[0].name;
+  if (settingsToSave.providers.length && !settingsToSave.providerSelected) {
+    settingsToSave.providerSelected = settingsToSave.providers[0].name;
   }
 
-  settings.value.id = SETTINGS_KEY;
-  database.update(settings.value);
+  settingsToSave.id = SETTINGS_KEY;
+  database.update(settingsToSave);
+  loadSettings(); // Reload settings after saving
 };
 
 const addProvider = () => {
-  settings.value.providers.push({ name: '', model: '', apiKey: '', proxyUrl: '' });
+  settings.value.providers.push({ name: '', model: '', customModel: '', apiKey: '', proxyUrl: '' });
 };
 
 const removeProvider = (index) => {
@@ -72,7 +89,7 @@ const removeProvider = (index) => {
 
 const getModelsForProvider = (providerName) => {
   const selectedProvider = providerOptions.find(option => option.label === providerName);
-  return selectedProvider ? selectedProvider.models : [];
+  return selectedProvider ? [...selectedProvider.models, 'custom'] : ['custom'];
 };
 
 onMounted(() => {

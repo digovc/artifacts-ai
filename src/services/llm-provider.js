@@ -2,6 +2,10 @@ import settings from "@/services/settings.js";
 import { providers } from "@/constants/providers.js";
 
 class LLMProvider {
+  getPath(provider) {
+    return provider.path;
+  }
+
   async sendMessage(messages, onData) {
     const config = settings.getSettings();
     const selectedProviderName = config.providerSelected;
@@ -9,17 +13,18 @@ class LLMProvider {
     const providerOnConfig = config.providers.find(p => p.name === selectedProviderName);
 
     if (!provider) {
-      throw new Error(`Provider ${ selectedProviderName } is not configured.`);
+      throw new Error(`Provider ${selectedProviderName} is not configured.`);
     }
 
     const url = providerOnConfig.proxyUrl || provider.url;
     const apiKey = providerOnConfig.apiKey;
     const model = providerOnConfig.model;
+    const path = this.getPath(provider);
 
-    const response = await fetch(`${ url }/v1/chat/completions`, {
+    const response = await fetch(`${url}${path}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${ apiKey }`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -31,7 +36,7 @@ class LLMProvider {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${ response.status }`);
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const reader = response.body.getReader();
