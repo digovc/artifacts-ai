@@ -107,7 +107,6 @@ const handlePaste = (event) => {
       const file = item.getAsFile();
       files.push(file);
     } else if (item.kind === 'string' && item.type === 'text/plain') {
-      // If it's a text file, we'll handle it as a file
       item.getAsString((text) => {
         const blob = new Blob([text], { type: 'text/plain' });
         const file = new File([blob], 'pasted_text.txt', { type: 'text/plain' });

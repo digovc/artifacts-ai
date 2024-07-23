@@ -1,6 +1,5 @@
 import database from "@/services/database.js";
 import notification from "@/services/notification.js";
-import extensionExtractor from "@/services/extension-extractor.js";
 
 class ArtifactsManager {
   getArtifacts(projectId) {
@@ -10,12 +9,9 @@ class ArtifactsManager {
     const lines = ['## Artifacts'];
 
     for (const artifact of artifacts) {
-      const extension = extensionExtractor.getExtension(artifact.name);
-      lines.push(`--artifact_start {{ ${ artifact.name } }}`);
-      lines.push('```' + extension);
+      lines.push(`<artifact name="${ artifact.name }">`);
       lines.push(artifact.content);
-      lines.push('```');
-      lines.push('--artifact_end');
+      lines.push('</artifact>');
     }
 
     return lines.join('\n');
@@ -70,13 +66,13 @@ class ArtifactsManager {
     let currentArtifact = null;
 
     for (const line of lines) {
-      if (line.trim().includes('--artifact_start')) {
-        const name = line.replace('--artifact_start', '').trim();
+      if (line.trim().includes('<artifact name="')) {
+        const name = line.replace('<artifact name="', '').replace('">', '').trim();
         currentArtifact = { name: name, contentLines: [] };
         continue;
       }
 
-      if (line.trim().includes('--artifact_end')) {
+      if (line.trim().includes('</artifact>')) {
         let contentLines = currentArtifact.contentLines;
         contentLines.shift();
         contentLines.pop();

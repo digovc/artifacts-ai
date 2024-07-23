@@ -66,11 +66,9 @@ class MessageSender {
     for (const reference of references) {
       const extension = extensionExtractor.getExtension(reference.name);
 
-      lines.push(`--reference_start {{ ${ reference.name } }}`);
-      lines.push('```' + extension);
+      lines.push(`<reference name="${ reference.name }">`);
       lines.push(reference.content);
-      lines.push('```');
-      lines.push('--reference_end');
+      lines.push('</reference>');
     }
 
     return lines.join('\n');

@@ -35,6 +35,7 @@ import database from '@/services/database.js';
 import Title from "@/components/Title.vue";
 import { providers } from "@/constants/providers.js";
 import { SETTINGS_KEY } from "@/services/settings.js";
+import notification from "@/services/notification.js";
 
 const settings = ref({
   general: { theme: 'light' },
@@ -76,7 +77,8 @@ const saveSettings = () => {
 
   settingsToSave.id = SETTINGS_KEY;
   database.update(settingsToSave);
-  loadSettings(); // Reload settings after saving
+  loadSettings();
+  notification.showNotification('Settings saved!');
 };
 
 const addProvider = () => {

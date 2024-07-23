@@ -17,6 +17,7 @@ class NotificationService {
       id: this.notificationId++,
       text: text
     };
+
     this.subscribers.forEach(callback => callback(notification));
   }
 }
