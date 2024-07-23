@@ -1,6 +1,6 @@
 <template>
   <div class="markdown">
-    <vue-markdown :source="src"/>
+    <vue-markdown :source="src" :options="{ forceBlock: true }"/>
   </div>
 </template>
 <script setup>

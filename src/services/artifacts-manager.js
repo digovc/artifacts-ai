@@ -74,8 +74,6 @@ class ArtifactsManager {
 
       if (line.trim().includes('</artifact>')) {
         let contentLines = currentArtifact.contentLines;
-        contentLines.shift();
-        contentLines.pop();
         currentArtifact.content = contentLines.join('\n');
         const name = currentArtifact.name;
         message.push(`**${ name }**`);
