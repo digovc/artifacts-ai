@@ -3,7 +3,7 @@ export const providers = [
     name: 'openai',
     label: 'OpenAI',
     url: 'https://api.openai.com',
-    models: ['gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+    models: ['gpt-4o-mini', 'gpt-4o', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
     path: '/v1/chat/completions'
   },
   {
@@ -24,7 +24,7 @@ export const providers = [
     name: 'mistral',
     label: 'Mistral',
     url: 'https://api.mistral.ai',
-    models: ['mistral-small', 'mistral-large'],
+    models: ['mistral-small', 'mistral-large', 'open-mistral-7b', 'open-mixtral-8x7b', 'open-mixtral-8x22b', 'codestral-latest', 'open-codestral-mamba', 'open-mistral-nemo-7b'],
     path: '/v1/chat/completions'
   },
   {

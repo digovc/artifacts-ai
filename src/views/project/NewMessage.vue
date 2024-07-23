@@ -14,6 +14,9 @@
         <IconButton :icon="faArrowRight" @click="sendMessage"/>
       </div>
     </div>
+    <div class="mt-2 text-xs text-center text-gray-500">
+      <span v-if="selectedProvider">{{ selectedProvider }} - {{ getSelectedModel() }}</span>
+    </div>
   </div>
   <Context :x="menuContextX" :y="menuContextY" v-if="showMenuContext" @onClose="showMenuContext = false">
     <div class="flex flex-col">
@@ -41,6 +44,7 @@ const menuContextX = ref(0);
 const menuContextY = ref(0);
 const messageInput = ref(null);
 const selectedProvider = ref("");
+const selectedModel = ref("");
 const showMenuContext = ref(false);
 
 const props = defineProps({
@@ -77,6 +81,7 @@ const openMenuContext = (event) => {
 
 const selectProvider = (provider) => {
   selectedProvider.value = provider;
+  selectedModel.value = getProviderModel(provider);
   saveSelectedProvider(provider);
   showMenuContext.value = false;
 };
@@ -95,6 +100,7 @@ const loadConfiguredProviders = () => {
   const settingsData = database.get(SETTINGS_KEY);
   configuredProviders.value = settingsData?.providers || [];
   selectedProvider.value = settingsData?.providerSelected || "";
+  selectedModel.value = getProviderModel(selectedProvider.value);
 };
 
 const handlePaste = (event) => {
@@ -119,6 +125,16 @@ const handlePaste = (event) => {
     event.preventDefault();
     emits("onFilesDrop", files);
   }
+};
+
+const getProviderModel = (providerName) => {
+  const settingsData = database.get(SETTINGS_KEY);
+  const provider = settingsData.providers.find(p => p.name === providerName);
+  return provider ? provider.model : '';
+};
+
+const getSelectedModel = () => {
+  return selectedModel.value;
 };
 
 onMounted(() => {
