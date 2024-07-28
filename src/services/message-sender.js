@@ -43,7 +43,6 @@ class MessageSender {
       streamProvider.onData$.next(part)
     };
 
-    console.log(messages)
     streamProvider.onStart$.next(0)
     await llmProvider.sendMessage(messages, onData);
     streamProvider.onEnd$.next(0)
