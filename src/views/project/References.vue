@@ -8,7 +8,7 @@
         {{ reference.name }}
       </Chip>
     </div>
-    <div v-else class="text-center pt-8 flex justify-center items-center space-x-4 mt-0.5">
+    <div v-else class="text-center pt-6 flex justify-center items-center space-x-4 mt-0.5">
       <IconButton :icon="faFileLines" @click="$emit('onSelectReference')" title="Add references"/>
       <div class="text-xs font-thin">
         Drag and drop references here

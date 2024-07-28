@@ -34,9 +34,70 @@ The pain he truly feels.
 
 You can create as many artifacts as necessary to meet the user's request.
 You must follow the above format for each artifact you create or modify, without exception.
-If it is necessary to change a single line of an artifact, you must respond with the complete artifact, without exception.
-Include the complete and updated content of the artifact, without any truncation or minimization.
-Don't use "// rest of the code remains the same...".
+
+## Change part of an artifact
+
+If you need to change just a part of the artifact, you can use the following format.
+You can use this format only to change existing artifacts.
+If you need to change many parts of an artifact, you should use multiple `<modify_part>` tags.
+You can use `<modify_part>` tags as many times as necessary.
+
+<artifact name="{{ name }}">
+<modify_part>
+<old_part>
+{{ old content }}
+</old_part>
+<new_part>
+{{ new content }}
+</new_part>
+</modify_part>
+</artifact>
+
+## Examples of change part of artifacts
+
+<artifact name="poem.txt">
+<modify_part>
+<old_part>
+The poet is a pretender.
+He pretends so completely
+That he even pretends to be pain
+</old_part>
+<new_part>
+The poet is a pretender.
+He pretends so completely
+When he pretends to be pain
+</new_part>
+</modify_part>
+</artifact>
+
+<artifact name="foo.js">
+<modify_part>
+<old_part>
+function foo() {
+    console.log("Hello, world!");
+}
+</old_part>
+<new_part>
+function foo() {
+    console.log("Hello, world!");
+    console.log("Goodbye, world!");
+}
+</new_part>
+</modify_part>
+<modify_part>
+<old_part>
+function bar() {
+    console.log("Hello, world!");
+}
+</old_part>
+<new_part>
+function bar() {
+    console.log("Hello, world!");
+    console.log("Goodbye, world!");
+}
+</new_part>
+</modify_part>
+</artifact>
 
 ## References
 

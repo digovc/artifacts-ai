@@ -25,39 +25,6 @@ class ArtifactsManager {
     }
   }
 
-  _saveArtifact(artifact, projectId) {
-    if (!artifact || !artifact.name || !artifact.content) return;
-
-    const filter = x => x.projectId === projectId && x.name === artifact.name;
-    const existingArtifact = database.getByFilter("artifacts", filter);
-
-    if (existingArtifact && existingArtifact.length) {
-      this._updateArtifact(existingArtifact[0], artifact.content);
-    } else {
-      this._createArtifact(artifact, projectId);
-    }
-  }
-
-  _updateArtifact(existing, newContent) {
-    existing.content = newContent;
-    existing.versions = existing.versions || [];
-    existing.versions.push(newContent);
-    database.update(existing);
-    notification.showNotification(`Artifact ${ existing.name } updated!`);
-  }
-
-  _createArtifact(artifact, projectId) {
-    const newArtifact = {
-      name: artifact.name,
-      content: artifact.content,
-      projectId,
-      versions: [artifact.content],
-    };
-
-    database.insert("artifacts", newArtifact);
-    notification.showNotification(`Artifact ${ artifact.name } created!`);
-  }
-
   extractArtifacts(response) {
     const lines = response.split('\n');
     const message = [];
@@ -91,7 +58,66 @@ class ArtifactsManager {
       messageToHistory.push(line);
     }
 
+    this._processArtifactsParts(artifacts);
+
     return { message: message.join('\n'), messageToHistory, artifacts };
+  }
+
+  _saveArtifact(artifact, projectId) {
+    if (!artifact || !artifact.name || !artifact.content) return;
+
+    const filter = x => x.projectId === projectId && x.name === artifact.name;
+    const existingArtifact = database.getByFilter("artifacts", filter);
+
+    if (existingArtifact && existingArtifact.length) {
+      this._updateArtifact(existingArtifact[0], artifact.content);
+    } else {
+      this._createArtifact(artifact, projectId);
+    }
+  }
+
+  _updateArtifact(existing, newContent) {
+    existing.content = newContent;
+    existing.versions = existing.versions || [];
+    existing.versions.push(newContent);
+    database.update(existing);
+    notification.showNotification(`Artifact ${ existing.name } updated!`);
+  }
+
+  _createArtifact(artifact, projectId) {
+    const newArtifact = {
+      name: artifact.name,
+      content: artifact.content,
+      projectId,
+      versions: [artifact.content],
+    };
+
+    database.insert("artifacts", newArtifact);
+    notification.showNotification(`Artifact ${ artifact.name } created!`);
+  }
+
+  _processArtifactsParts(artifacts) {
+    for (const artifact of artifacts) {
+      this._processArtifactParts(artifact);
+    }
+  }
+
+  _processArtifactParts(artifact) {
+    const content = artifact.content.trimStart();
+    if (!content.startsWith('<modify_part>')) return;
+    const modifications = content.split('<modify_part>');
+    const existingArtifact = database.getByFilter("artifacts", x => x.name === artifact.name);
+    if (!existingArtifact || !existingArtifact.length) return;
+    let currentContent = existingArtifact[0].content;
+
+    for (const modification of modifications) {
+      if (!modification.trimStart().startsWith('<old_part>')) continue;
+      const oldPart = modification.substring('<old_part>'.length + 1, modification.indexOf('</old_part>'));
+      const newPart = modification.substring(modification.indexOf('<new_part>') + '<new_part>'.length, modification.indexOf('</new_part>'));
+      currentContent = currentContent.replace(oldPart, newPart);
+    }
+
+    artifact.content = currentContent;
   }
 }
 

@@ -36,8 +36,6 @@ class MessageSender {
       messages.push({ role: historyMessage.from, content: historyMessage.contentToHistory || historyMessage.content });
     }
 
-    messages.push({ role: "user", content: message });
-
     let content = ''
 
     const onData = (part) => {
@@ -45,6 +43,7 @@ class MessageSender {
       streamProvider.onData$.next(part)
     };
 
+    console.log(messages)
     streamProvider.onStart$.next(0)
     await llmProvider.sendMessage(messages, onData);
     streamProvider.onEnd$.next(0)
