@@ -49,7 +49,7 @@ class MessageSender {
 
     const response = content;
 
-    const result = artifactsManager.extractArtifacts(response);
+    const result = artifactsManager.extractArtifacts(response, projectId);
 
     this._saveMessage(result.message, result.messageToHistory, response, projectId);
     artifactsManager.saveArtifacts(result.artifacts, projectId);
