@@ -87,8 +87,8 @@ class MessageSender {
 
   _saveMessage(message, messageToHistory, messageComplete, projectId) {
     const config = settings.getSettings()
-    const provider = providers.find(p => p.label === config.providerSelected);
-    const providerOnConfig = config.providers.find(p => p.name === config.providerSelected);
+    const providerOnConfig = config.providers[config.providerSelected];
+    const provider = providers.find(p => p.label === providerOnConfig.name);
 
     const newProviderMessage = {
       content: message,
