@@ -49,7 +49,7 @@ class MessageSender {
 
     const response = content;
 
-    const result = artifactsManager.extractArtifacts(response, projectId);
+    const result = artifactsManager.extractArtifacts(response);
 
     this._saveMessage(result.message, result.messageToHistory, response, projectId);
     artifactsManager.saveArtifacts(result.artifacts, projectId);
@@ -62,7 +62,7 @@ class MessageSender {
     const lines = ['## References'];
 
     for (const reference of references) {
-      const extension = extensionExtractor.getExtension(reference.name);
+      extensionExtractor.getExtension(reference.name);
 
       lines.push(`<reference name="${ reference.name }">`);
       lines.push(reference.content);

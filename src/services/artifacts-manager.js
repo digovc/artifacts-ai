@@ -25,7 +25,7 @@ class ArtifactsManager {
     }
   }
 
-  extractArtifacts(response, projectId) {
+  extractArtifacts(response) {
     const lines = response.split('\n');
     const message = [];
     const messageToHistory = [];
@@ -57,8 +57,6 @@ class ArtifactsManager {
       message.push(line);
       messageToHistory.push(line);
     }
-
-    this._processArtifactsParts(artifacts, projectId);
 
     return { message: message.join('\n'), messageToHistory, artifacts };
   }
@@ -94,38 +92,6 @@ class ArtifactsManager {
 
     database.insert("artifacts", newArtifact);
     notification.showNotification(`Artifact ${ artifact.name } created!`);
-  }
-
-  _processArtifactsParts(artifacts, projectId) {
-    for (const artifact of artifacts) {
-      this._processArtifactParts(artifact, projectId);
-    }
-  }
-
-  _processArtifactParts(artifact, projectId) {
-    const content = artifact.content.trimStart();
-    if (!content.startsWith('<modify_part>')) return;
-    const modifications = content.split('<modify_part>');
-    const filter = x => x.projectId === projectId && x.name === artifact.name;
-    let currentContent = '';
-    const existingArtifact = database.getByFilter("artifacts", filter);
-
-    if (existingArtifact && existingArtifact.length) {
-      currentContent = existingArtifact[0].content;
-    } else {
-      const existingReference = database.getByFilter("references", filter);
-      if (!existingReference || !existingReference.length) return;
-      currentContent = existingReference[0].content;
-    }
-
-    for (const modification of modifications) {
-      if (!modification.trimStart().startsWith('<old_part>')) continue;
-      const oldPart = modification.substring('<old_part>'.length + 1, modification.indexOf('</old_part>'));
-      const newPart = modification.substring(modification.indexOf('<new_part>') + '<new_part>'.length, modification.indexOf('</new_part>'));
-      currentContent = currentContent.replace(oldPart, newPart);
-    }
-
-    artifact.content = currentContent;
   }
 }
 
