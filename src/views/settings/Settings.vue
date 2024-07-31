@@ -72,7 +72,7 @@ const saveSettings = () => {
   });
 
   if (settingsToSave.providers.length && !settingsToSave.providerSelected) {
-    settingsToSave.providerSelected = settingsToSave.providers[0].name;
+    settingsToSave.providerSelected = 0;
   }
 
   settingsToSave.id = SETTINGS_KEY;

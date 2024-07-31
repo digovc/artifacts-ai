@@ -20,9 +20,11 @@
   </div>
   <Context :x="menuContextX" :y="menuContextY" v-if="showMenuContext" @onClose="showMenuContext = false">
     <div class="flex flex-col">
-      <div v-for="provider in configuredProviders" :key="provider.name" @click="selectProvider(provider.name)"
+      <div v-for="(provider, index) in configuredProviders" :key="provider.name" @click="selectProvider(index)"
            class="cursor-pointer hover:bg-gray-200 p-2">
-        <span :class="{ 'font-bold': provider.name === selectedProvider }">{{ provider.name }}</span>
+        <span :class="{ 'font-bold': index === selectedProviderIndex }">
+          {{ provider.name }} - {{ provider.model }}
+        </span>
       </div>
     </div>
   </Context>
@@ -44,6 +46,7 @@ const menuContextX = ref(0);
 const menuContextY = ref(0);
 const messageInput = ref(null);
 const selectedProvider = ref("");
+const selectedProviderIndex = ref(0);
 const selectedModel = ref("");
 const showMenuContext = ref(false);
 
@@ -79,28 +82,36 @@ const openMenuContext = (event) => {
   showMenuContext.value = true;
 };
 
-const selectProvider = (provider) => {
-  selectedProvider.value = provider;
-  selectedModel.value = getProviderModel(provider);
-  saveSelectedProvider(provider);
+const selectProvider = (providerIndex) => {
+  selectedProvider.value = configuredProviders.value[providerIndex].name;
+  selectedModel.value = getProviderModel(providerIndex);
+  selectedProviderIndex.value = providerIndex;
+  saveSelectedProvider(providerIndex);
   showMenuContext.value = false;
 };
 
-const saveSelectedProvider = (provider) => {
+const saveSelectedProvider = (providerIndex) => {
   let settingsData = database.get(SETTINGS_KEY);
   if (!settingsData) {
-    settingsData = { id: SETTINGS_KEY, general: {}, providers: [], providerSelected: provider };
+    settingsData = { id: SETTINGS_KEY, general: {}, providers: [], providerSelected: providerIndex };
   } else {
-    settingsData.providerSelected = provider;
+    settingsData.providerSelected = providerIndex;
   }
   database.update(settingsData);
 };
 
 const loadConfiguredProviders = () => {
   const settingsData = database.get(SETTINGS_KEY);
+  if (!settingsData?.providers?.length) return;
+
+  if (typeof settingsData.providerSelected === 'string') {
+    settingsData.providerSelected = 0;
+  }
+
   configuredProviders.value = settingsData?.providers || [];
-  selectedProvider.value = settingsData?.providerSelected || "";
-  selectedModel.value = getProviderModel(selectedProvider.value);
+  selectedProvider.value = settingsData?.providers[settingsData?.providerSelected].name || "";
+  selectedModel.value = getProviderModel(settingsData?.providerSelected);
+  selectedProviderIndex.value = settingsData?.providerSelected;
 };
 
 const handlePaste = (event) => {
@@ -127,9 +138,9 @@ const handlePaste = (event) => {
   }
 };
 
-const getProviderModel = (providerName) => {
+const getProviderModel = (providerIndex) => {
   const settingsData = database.get(SETTINGS_KEY);
-  const provider = settingsData.providers.find(p => p.name === providerName);
+  const provider = settingsData.providers[providerIndex];
   return provider ? provider.model : '';
 };
 
@@ -139,6 +150,6 @@ const getSelectedModel = () => {
 
 onMounted(() => {
   loadConfiguredProviders();
-  messageInput.value.focus();
+  setTimeout(() => messageInput.value.focus(), 300);
 });
 </script>

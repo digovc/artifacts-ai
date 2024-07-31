@@ -8,7 +8,12 @@ class LLMProvider {
 
   async sendMessage(messages, onData) {
     const config = settings.getSettings();
-    const selectedProviderName = config.providerSelected;
+    if (!config.providers || !config.providers.length) throw new Error('No providers configured.');
+
+    config.providerSelected = config.providerSelected || 0;
+    if (config.providerSelected >= config.providers.length) config.providerSelected = 0;
+
+    const selectedProviderName = config.providers[config.providerSelected].name;
     const provider = providers.find(p => p.label === selectedProviderName);
     const providerOnConfig = config.providers.find(p => p.name === selectedProviderName);
 
