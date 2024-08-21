@@ -2,10 +2,6 @@ import settings from "@/services/settings.js";
 import { providers } from "@/constants/providers.js";
 
 class LLMProvider {
-  getPath(provider) {
-    return provider.path;
-  }
-
   async sendMessage(messages, onData) {
     const config = settings.getSettings();
     if (!config.providers || !config.providers.length) throw new Error('No providers configured.');
@@ -21,23 +17,12 @@ class LLMProvider {
       throw new Error(`Provider ${ selectedProviderName } is not configured.`);
     }
 
-    const url = providerOnConfig.proxyUrl || provider.url;
-    const apiKey = providerOnConfig.apiKey;
-    const model = providerOnConfig.model;
-    const path = this.getPath(provider);
+    const url = this.getUrl(providerOnConfig, provider);
 
-    const response = await fetch(`${ url }${ path }`, {
+    const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${ apiKey }`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        max_tokens: 4096,
-        messages: messages,
-        model: model,
-        stream: true,
-      }),
+      headers: this.getHeaders(provider, providerOnConfig),
+      body: this.getBody(messages, providerOnConfig),
     });
 
     if (!response.ok) {
@@ -61,7 +46,10 @@ class LLMProvider {
 
         let dataDone = false
 
-        switch (provider.name) {
+        switch (provider.name.toLowerCase()) {
+          case 'google':
+            dataDone = this.receiveDataGoogle(line, onData);
+            break;
           case 'ollama':
             dataDone = this.receiveDataOllama(line, onData);
             break;
@@ -71,10 +59,83 @@ class LLMProvider {
         }
 
         if (dataDone) break;
+        if (provider.name.toLowerCase() === 'google' && reader.closed) break;
       }
 
       buffer = lines[lines.length - 1];
     }
+  }
+
+  getBody(messages, providerOnConfig) {
+    switch (providerOnConfig.name.toLowerCase()) {
+      case 'google':
+        return this.getGoogleBody(messages);
+      default:
+        return JSON.stringify({
+          max_tokens: 4096,
+          messages: messages,
+          model: providerOnConfig.model,
+          stream: true,
+        });
+    }
+  }
+
+  getGoogleBody(messages) {
+    const contents = [];
+    messages?.forEach(message => {
+      const role = message.role === 'assistant' ? 'model' : 'user';
+      contents.push({
+        role: role,
+        parts: [{
+          text: message.content
+        }]
+      });
+
+      if (message.role === 'system') {
+        contents.push({
+          role: 'model',
+          parts: [{
+            text: 'Understood'
+          }]
+        });
+      }
+    });
+
+    return JSON.stringify({ contents });
+  }
+
+  getHeaders(provider, providerOnConfig) {
+    switch (providerOnConfig.name.toLowerCase()) {
+      case 'google':
+        return this.getGoogleHeaders(providerOnConfig);
+      default:
+        return {
+          'Authorization': `Bearer ${ providerOnConfig.apiKey }`,
+          'Content-Type': 'application/json',
+        };
+    }
+  }
+
+  getGoogleHeaders(providerOnConfig) {
+    return {
+      'x-goog-api-key': providerOnConfig.apiKey,
+      'Content-Type': 'application/json',
+    };
+  }
+
+  getUrl(providerOnConfig, provider) {
+    switch (provider.name.toLowerCase()) {
+      case 'google':
+        return this.getGoogleUrl(providerOnConfig, provider);
+      default:
+        return `${ providerOnConfig.proxyUrl || provider.url }${ provider.path }`;
+    }
+  }
+
+  getGoogleUrl(providerOnConfig, provider) {
+    const url = providerOnConfig.proxyUrl || provider.url;
+    const path = provider.path;
+    return `${ url }${ path }/${ providerOnConfig.model }:streamGenerateContent?alt=sse`;
   }
 
   receiveData(line, onData) {
@@ -90,6 +151,13 @@ class LLMProvider {
     } else if (parsed.delta?.text) {
       onData(parsed.delta?.text);
     }
+  }
+
+  receiveDataGoogle(line, onData) {
+    const json = line.substring(6);
+    const parsed = JSON.parse(json);
+    if (!parsed.candidates.length) return false;
+    onData(parsed.candidates[0].content.parts[0].text);
   }
 
   receiveDataOllama(line, onData) {

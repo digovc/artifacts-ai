@@ -14,6 +14,13 @@ export const providers = [
     path: '/v1/messages'
   },
   {
+    name: 'google',
+    label: 'Google',
+    url: 'https://generativelanguage.googleapis.com',
+    models: ['gemini-1.5-flash', 'gemini-1.5-pro'],
+    path: '/v1beta/models'
+  },
+  {
     name: 'groq',
     label: 'Groq',
     url: 'https://api.groq.com/openai',
