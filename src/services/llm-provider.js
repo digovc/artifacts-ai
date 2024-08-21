@@ -101,7 +101,7 @@ class LLMProvider {
       }
     });
 
-    const safetyConfig = [
+    const safetySettings = [
       {
         category: "HARM_CATEGORY_HATE_SPEECH",
         threshold: "BLOCK_NONE"
@@ -120,7 +120,7 @@ class LLMProvider {
       }
     ];
 
-    return JSON.stringify({ contents, safetyConfig });
+    return JSON.stringify({ contents, safetySettings });
   }
 
   getHeaders(provider, providerOnConfig) {
