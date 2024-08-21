@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-12 px-96 m-auto h-full overflow-y-auto p-8">
+  <div class="space-y-4 px-96 m-auto h-full overflow-y-auto p-8">
     <Title>Settings</Title>
     <Group title="General">
       <Subgroup title="Theme">
@@ -7,19 +7,18 @@
       </Subgroup>
     </Group>
     <Group title="LLM Providers">
-      <Button @click="addProvider">Add Provider</Button>
-      <div v-for="(provider, index) in settings.providers" :key="index" class="pb-4 mb-4">
+      <div v-for="(provider, index) in settings.providers" :key="index" class="">
         <Subgroup :title="'Provider ' + (index + 1)">
           <Field v-model="provider.name" :options="providerOptions.map(option => option.label)" label="Provider"
                  type="select"/>
           <Field v-model="provider.model" :options="getModelsForProvider(provider.name)" label="Model" type="select"/>
-          <Field v-if="provider.model === 'custom'" v-model="provider.customModel" label="Custom Model"
-                 type="text"/>
+          <Field v-if="provider.model === 'custom'" v-model="provider.customModel" label="Custom Model" type="text"/>
           <Field v-model="provider.apiKey" label="API Key" type="password"/>
           <Field v-model="provider.proxyUrl" label="Proxy URL" type="text"/>
           <Button class="mt-2" @click="() => removeProvider(index)">Remove</Button>
         </Subgroup>
       </div>
+      <Button @click="addProvider">Add Provider</Button>
     </Group>
     <Button @click="saveSettings">Save Settings</Button>
   </div>
