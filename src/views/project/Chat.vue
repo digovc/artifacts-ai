@@ -2,8 +2,7 @@
   <div class="h-full flex flex-col p-4 py-2">
     <div class="pb-4 group flex items-center">
       <Title @click="openInputModal" class="cursor-pointer pr-4">
-        {{ project.name }}
-      </Title>
+        {{ project.name }} </Title>
       <FontAwesomeIcon :icon="faPen" @click="openInputModal" class="invisible group-hover:visible cursor-pointer"/>
     </div>
     <div class="relative" :class="{ 'invisible': isFullSize, 'grow': !isFullSize }">
@@ -140,7 +139,10 @@ const createReferenceToFile = async file => {
       type: isImage ? "image" : "text",
     };
 
+    const filter = x => x.projectId === props.project.id && x.name === file.name;
+    database.deleteByFilter("references", filter);
     database.insert("references", reference);
+    references.value = references.value.filter(x => x.name !== file.name);
     references.value.push(reference);
   };
 };
