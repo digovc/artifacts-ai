@@ -18,9 +18,13 @@
           <Button class="mt-2" @click="() => removeProvider(index)">Remove</Button>
         </Subgroup>
       </div>
-      <Button @click="addProvider">Add Provider</Button>
+      <div class="flex justify-end">
+        <Button @click="addProvider">Add Provider</Button>
+      </div>
     </Group>
-    <Button @click="saveSettings">Save Settings</Button>
+    <div class="flex justify-end">
+      <Button @click="saveSettings">Save Settings</Button>
+    </div>
   </div>
 </template>
 

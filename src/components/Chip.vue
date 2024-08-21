@@ -1,8 +1,8 @@
 <template>
-  <div class="flex space-x-4 rounded pl-4 pr-3 py-1 cursor-pointer items-center hover:bg-gray-200 group border"
+  <div class="flex space-x-2 rounded pl-2 pr-1 py-.5 cursor-pointer items-center hover:bg-gray-200 group border"
        :class="{ 'bg-gray-200': isSelected }">
     <div v-if="icon" class="-mt-px">
-      <FontAwesomeIcon :icon="icon" class="text-sm"/>
+      <FontAwesomeIcon :icon="icon" class="text-xs"/>
     </div>
     <div class="whitespace-nowrap text-sm" @click="$emit('onClick')">
       <slot/>
