@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-12 w-2/4 m-auto h-full overflow-y-auto p-8">
+  <div class="space-y-12 px-96 m-auto h-full overflow-y-auto p-8">
     <Title>Settings</Title>
     <Group title="General">
       <Subgroup title="Theme">
