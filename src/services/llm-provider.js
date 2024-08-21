@@ -9,9 +9,9 @@ class LLMProvider {
     config.providerSelected = config.providerSelected || 0;
     if (config.providerSelected >= config.providers.length) config.providerSelected = 0;
 
-    const selectedProviderName = config.providers[config.providerSelected].name;
+    const providerOnConfig = config.providers[config.providerSelected];
+    const selectedProviderName = providerOnConfig.name;
     const provider = providers.find(p => p.label === selectedProviderName);
-    const providerOnConfig = config.providers.find(p => p.name === selectedProviderName);
 
     if (!provider) {
       throw new Error(`Provider ${ selectedProviderName } is not configured.`);

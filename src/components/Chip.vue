@@ -1,5 +1,5 @@
 <template>
-  <div class="flex space-x-2 rounded pl-2 pr-1 py-.5 cursor-pointer items-center hover:bg-gray-200 group border"
+  <div class="flex space-x-2 rounded px-2 py-.5 cursor-pointer items-center hover:bg-gray-200 group border"
        :class="{ 'bg-gray-200': isSelected }">
     <div v-if="icon" class="-mt-px">
       <FontAwesomeIcon :icon="icon" class="text-xs"/>
