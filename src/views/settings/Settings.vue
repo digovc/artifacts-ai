@@ -1,11 +1,6 @@
 <template>
   <div class="space-y-4 px-96 m-auto h-full overflow-y-auto p-8">
     <Title>Settings</Title>
-    <Group title="General">
-      <Subgroup title="Theme">
-        <Field v-model="settings.general.theme" :options="['light', 'dark']" label="Theme" type="select"/>
-      </Subgroup>
-    </Group>
     <Group title="LLM Providers">
       <div v-for="(provider, index) in settings.providers" :key="index" class="">
         <Subgroup :title="'Provider ' + (index + 1)">
