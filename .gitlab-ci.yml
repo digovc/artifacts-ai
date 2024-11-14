@@ -1,0 +1,14 @@
+deploy:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  script: |
+    docker build \
+      --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
+      --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+      --build-arg BUCKET=$BUCKET \
+      --build-arg CLOUD_FRONT_DISTRIBUTION=$CLOUD_FRONT_DISTRIBUTION \
+      -t deploy -f deploy.Dockerfile .
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
